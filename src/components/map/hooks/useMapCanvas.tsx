@@ -1,43 +1,38 @@
 import { useRef, useState, useEffect } from 'react';
+import useImage from 'use-image';
+import { usePlayerMovement } from './usePlayerMovement';
 
-const fogOpacity = 0.5;
+export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
+  const stageRef = useRef(null);
+  const fogLayerRef = useRef(null);
+  const [mapImage] = useImage(mapSrc);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
-export const useMapCanvas = (backgroundImage: string) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  // const [context, setContext] = useState<any>(null);
-  // const [canvas, setCanvas] = useState<any>(null);
+  const { playerPosition, moveHandler } = usePlayerMovement();
 
+  /* HANDLE IMAGE SETUP */
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-
-    if (!context) return;
-
-    const image = new Image();
-    image.src = backgroundImage;
-
+    const image = new window.Image();
+    image.src = mapSrc;
     image.onload = () => {
-      if (!canvas) return;
-      canvas.width = image.width;
-      canvas.height = image.height;
-
-      context.drawImage(image, 0, 0, canvas.width, canvas.height);
-      setIsLoaded(true);
+      setImageSize({ width: image.width, height: image.height });
     };
-  }, [backgroundImage]);
+  }, [mapSrc]);
 
+  /* HANDLE MAP UNFOLDING */
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
+    const stage = stageRef.current;
+    const fogLayer = fogLayerRef.current;
+    if (!stage || !fogLayer) return;
 
-    if (!context) return;
+    const canvas = fogLayer.canvas._canvas;
+    const ctx = canvas.getContext('2d');
+    const { x, y } = playerPosition;
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, 40, 0, Math.PI * 2, false);
+    ctx.fill();
+  }, [playerPosition]);
 
-    if (isLoaded) {
-      context.fillStyle = `rgba(0, 0, 0, ${fogOpacity})`;
-      context.fillRect(0, 0, canvas!.width, canvas!.height);
-    }
-  }, [isLoaded]);
-
-  return { canvasRef };
+  return { stageRef, fogLayerRef, mapImage, imageSize, moveHandler, playerPosition };
 };

@@ -13,8 +13,11 @@
     "format": "npm run prettier:fix && npm run lint:fix"
   },
   "dependencies": {
+    "konva": "^9.2.0",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react-dom": "^18.1.0",
+    "react-konva": "^18.2.10",
+    "use-image": "^1.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.9",
@@ -33,5 +36,9 @@
     "typescript": "^4.6.3",
     "vite": "^2.9.9",
     "vite-tsconfig-paths": "^3.5.0"
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/akena-engineering/wojciech-blachut.git",
+  "author": "Wojciech Błachut <38980771+wblachut@users.noreply.github.com>",
+  "license": "MIT"
 }
