@@ -6,7 +6,9 @@ interface FogOfWarCanvasProps {
   PlayerMarker: JSX.Element;
 }
 
-export const FogOfWarCanvas = ({ mapSrc: mapSrc }: FogOfWarCanvasProps) => {
+// TODO: Make this only visualization component
+
+export const FogOfWarCanvas = ({ mapSrc, PlayerMarker }: FogOfWarCanvasProps) => {
   const { moveHandler, stageRef, mapImage, fogImage, fogLayerRef, playerPosition } =
     useMapCanvas(mapSrc);
 
@@ -32,6 +34,19 @@ export const FogOfWarCanvas = ({ mapSrc: mapSrc }: FogOfWarCanvasProps) => {
           <Circle x={playerPosition.x} y={playerPosition.y} radius={10} fill='red' />
         </Layer>
       </Stage>
+      <div
+        style={{
+          position: 'absolute',
+          left: playerPosition.x,
+          top: playerPosition.y,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        id='player-marker-wrapper'
+      >
+        {PlayerMarker}
+      </div>
     </>
   );
 };
