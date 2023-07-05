@@ -65,5 +65,6 @@ export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
     mapSize,
     moveHandler,
     playerPosition,
+    percentageUncovered,
   };
 };

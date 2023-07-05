@@ -27,15 +27,15 @@ export const getPixelBuffer = (canvas: HTMLCanvasElement): Uint8Array => {
 };
 
 export const getPixelRatio = (data: Uint8Array, totalPixels: number): number => {
-  let uncoveredPixels = 0;
+  let coveredPixels = 0;
 
   for (let i = 0; i < data.length; i += 4) {
     if (data[i + 3] !== 0) {
-      uncoveredPixels++;
+      coveredPixels++;
     }
   }
 
-  return uncoveredPixels / totalPixels;
+  return (totalPixels - coveredPixels) / totalPixels;
 };
 
 export const getRoundedPercentage = (ratio: number) => Math.round(ratio * 100);

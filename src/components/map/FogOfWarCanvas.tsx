@@ -1,5 +1,7 @@
+import { ProgressTracker } from '../ProgressTracker';
 import { useMapCanvas } from './hooks/useMapCanvas';
 import { Stage, Layer, Rect, Circle } from 'react-konva';
+import { PlayerWrapper } from '~/player/PlayerWrapper';
 
 interface FogOfWarCanvasProps {
   mapSrc: HTMLImageElement['src'];
@@ -9,8 +11,15 @@ interface FogOfWarCanvasProps {
 // TODO: Make this only visualization component
 
 export const FogOfWarCanvas = ({ mapSrc, PlayerMarker }: FogOfWarCanvasProps) => {
-  const { moveHandler, stageRef, mapImage, fogImage, fogLayerRef, playerPosition } =
-    useMapCanvas(mapSrc);
+  const {
+    moveHandler,
+    stageRef,
+    mapImage,
+    fogImage,
+    fogLayerRef,
+    playerPosition,
+    percentageUncovered,
+  } = useMapCanvas(mapSrc);
 
   return (
     <>
@@ -34,19 +43,9 @@ export const FogOfWarCanvas = ({ mapSrc, PlayerMarker }: FogOfWarCanvasProps) =>
           <Circle x={playerPosition.x} y={playerPosition.y} radius={10} fill='red' />
         </Layer>
       </Stage>
-      <div
-        style={{
-          position: 'absolute',
-          left: playerPosition.x,
-          top: playerPosition.y,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        id='player-marker-wrapper'
-      >
-        {PlayerMarker}
-      </div>
+      {/* TODO: Move outside this component if possible */}
+      <PlayerWrapper playerMarker={PlayerMarker} playerPosition={playerPosition} />
+      <ProgressTracker progressPercentage={percentageUncovered} />
     </>
   );
 };
