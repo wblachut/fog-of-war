@@ -1,38 +1,65 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import useImage from 'use-image';
 import { usePlayerMovement } from './usePlayerMovement';
+import {
+  clearFogOfWar,
+  getPixelBuffer,
+  getPixelRatio,
+  getRoundedPercentage,
+  setUpImage,
+} from '~/helpers/mapExploreHelpers';
+import { CanvasRef, StageRef, mapSize } from '~/model/types';
+
+const PLAYER_SIGHT_RADIUS = 80;
 
 export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
-  const stageRef = useRef(null);
-  const fogLayerRef = useRef(null);
+  const stageRef = useRef<StageRef>(null);
+  const fogLayerRef = useRef<CanvasRef>(null);
   const [mapImage] = useImage(mapSrc);
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
-  const { playerPosition, moveHandler } = usePlayerMovement();
+  const [mapSize, setMapSize] = useState<mapSize>({ width: 0, height: 0 });
+
+  const { playerPosition, moveHandler } = usePlayerMovement(mapSize);
+  const [percentageUncovered, setPercentageUncovered] = useState(0);
 
   /* HANDLE IMAGE SETUP */
   useEffect(() => {
-    const image = new window.Image();
-    image.src = mapSrc;
+    const image = setUpImage(mapSrc);
     image.onload = () => {
-      setImageSize({ width: image.width, height: image.height });
+      setMapSize({ width: image.width, height: image.height });
     };
   }, [mapSrc]);
 
-  /* HANDLE MAP UNFOLDING */
+  /* HANDLE MAP UNCOVERING */
   useEffect(() => {
     const stage = stageRef.current;
     const fogLayer = fogLayerRef.current;
     if (!stage || !fogLayer) return;
+    clearFogOfWar(fogLayer, playerPosition, PLAYER_SIGHT_RADIUS);
 
-    const canvas = fogLayer.canvas._canvas;
-    const ctx = canvas.getContext('2d');
-    const { x, y } = playerPosition;
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.beginPath();
-    ctx.arc(x, y, 40, 0, Math.PI * 2, false);
-    ctx.fill();
+    // Request animation frame to calculate fog coverage at a lower frequency
+    const requestID = requestAnimationFrame(calculateFogCoverage);
+
+    return () => cancelAnimationFrame(requestID);
   }, [playerPosition]);
 
-  return { stageRef, fogLayerRef, mapImage, imageSize, moveHandler, playerPosition };
+  const calculateFogCoverage = useCallback(() => {
+    const fogLayer = fogLayerRef.current;
+    if (!fogLayer) return;
+    const canvas = fogLayer.canvas._canvas;
+    const data = getPixelBuffer(canvas);
+    const totalPixels = canvas.width * canvas.height;
+    const newPercentageUncovered = getRoundedPercentage(getPixelRatio(data, totalPixels));
+    setPercentageUncovered(newPercentageUncovered);
+    console.log(newPercentageUncovered);
+  }, []);
+
+  return {
+    stageRef,
+    fogLayerRef,
+    mapImage,
+    mapSize,
+    moveHandler,
+    playerPosition,
+  };
 };
