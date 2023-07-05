@@ -6,10 +6,9 @@ interface FogOfWarCanvasProps {
   PlayerMarker: JSX.Element;
 }
 
-const FOG_FILL = 'rgba(0, 0, 0, 0.9)';
-
 export const FogOfWarCanvas = ({ mapSrc: mapSrc }: FogOfWarCanvasProps) => {
-  const { moveHandler, stageRef, mapImage, fogLayerRef, playerPosition } = useMapCanvas(mapSrc);
+  const { moveHandler, stageRef, mapImage, fogImage, fogLayerRef, playerPosition } =
+    useMapCanvas(mapSrc);
 
   return (
     <>
@@ -26,7 +25,7 @@ export const FogOfWarCanvas = ({ mapSrc: mapSrc }: FogOfWarCanvasProps) => {
         </Layer>
         <Layer ref={fogLayerRef} listening={false} id='fog-layer'>
           {/* TODO: Add image fill to fog */}
-          <Rect width={mapImage?.width} height={mapImage?.height} fill={FOG_FILL} />
+          <Rect width={mapImage?.width} height={mapImage?.height} fillPatternImage={fogImage} />
         </Layer>
         <Layer id='player-marker-layer'>
           {/* Player marker */}

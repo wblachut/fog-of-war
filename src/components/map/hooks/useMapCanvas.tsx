@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, RefObject } from 'react';
 import useImage from 'use-image';
 import { usePlayerMovement } from './usePlayerMovement';
 import {
@@ -9,13 +9,16 @@ import {
   setUpImage,
 } from '~/helpers/mapExploreHelpers';
 import { CanvasRef, StageRef, mapSize } from '~/model/types';
+import fog from '../../../assets/fog-homm3.png';
 
 const PLAYER_SIGHT_RADIUS = 80;
+const FOG_SRC = fog;
 
 export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
   const stageRef = useRef<StageRef>(null);
   const fogLayerRef = useRef<CanvasRef>(null);
   const [mapImage] = useImage(mapSrc);
+  const [fogImage] = useImage(FOG_SRC);
 
   const [mapSize, setMapSize] = useState<mapSize>({ width: 0, height: 0 });
 
@@ -46,7 +49,7 @@ export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
   const calculateFogCoverage = useCallback(() => {
     const fogLayer = fogLayerRef.current;
     if (!fogLayer) return;
-    const canvas = fogLayer.canvas._canvas;
+    const canvas = fogLayer?.canvas._canvas;
     const data = getPixelBuffer(canvas);
     const totalPixels = canvas.width * canvas.height;
     const newPercentageUncovered = getRoundedPercentage(getPixelRatio(data, totalPixels));
@@ -58,6 +61,7 @@ export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
     stageRef,
     fogLayerRef,
     mapImage,
+    fogImage,
     mapSize,
     moveHandler,
     playerPosition,
