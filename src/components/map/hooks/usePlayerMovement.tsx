@@ -9,6 +9,12 @@ import { CustomMouseEvent, mapSize, Position } from '~/model/types';
 const STARTING_POSITION = { x: 560, y: 380 };
 const DEFAULT_POSITION = { x: 0, y: 0 };
 
+export interface MoveHandler {
+  handleMouseMove: (e: CustomMouseEvent) => void;
+  handleMouseDown: () => void;
+  handleMouseUp: () => void;
+}
+
 export const usePlayerMovement = (mapSize: mapSize) => {
   const [playerPosition, setPlayerPosition] = useState<Position>(DEFAULT_POSITION);
   const [isMousePressed, setIsMousePressed] = useState(false);
@@ -26,10 +32,10 @@ export const usePlayerMovement = (mapSize: mapSize) => {
         );
       }
     },
-    [isMousePressed],
+    [isMousePressed, mapSize],
   );
 
-  const handleMouseDown = useCallback((e: any) => {
+  const handleMouseDown = useCallback(() => {
     setIsMousePressed(true);
   }, []);
 
@@ -51,7 +57,7 @@ export const usePlayerMovement = (mapSize: mapSize) => {
     return () => {
       window.removeEventListener('keydown', handleArrowMove);
     };
-  }, [playerPosition]);
+  }, [playerPosition, mapSize]);
 
   const MoveToBeginnerLocation = useCallback(() => {
     setPlayerPosition(STARTING_POSITION);

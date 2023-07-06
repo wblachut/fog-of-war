@@ -1,51 +1,37 @@
-import { ProgressTracker } from '../ProgressTracker';
-import { useMapCanvas } from './hooks/useMapCanvas';
-import { Stage, Layer, Rect, Circle } from 'react-konva';
-import { PlayerWrapper } from '~/player/PlayerWrapper';
+import { CanvasRef, LayerRef, StageRef } from '~/model/types';
+import { Stage, Layer, Rect } from 'react-konva';
+import { MoveHandler } from './hooks/usePlayerMovement';
 
 interface FogOfWarCanvasProps {
-  mapSrc: HTMLImageElement['src'];
-  PlayerMarker: JSX.Element;
+  stageRef: StageRef;
+  fogLayerRef: CanvasRef;
+  mapImage: HTMLImageElement;
+  fogImage: HTMLImageElement;
+  moveHandler: MoveHandler;
 }
 
-// TODO: Make this only visualization component
-
-export const FogOfWarCanvas = ({ mapSrc, PlayerMarker }: FogOfWarCanvasProps) => {
-  const {
-    moveHandler,
-    stageRef,
-    mapImage,
-    fogImage,
-    fogLayerRef,
-    playerPosition,
-    percentageUncovered,
-  } = useMapCanvas(mapSrc);
-
+export const FogOfWarCanvas = ({
+  stageRef,
+  fogLayerRef,
+  mapImage,
+  fogImage,
+  moveHandler,
+}: FogOfWarCanvasProps) => {
   return (
-    <>
-      <Stage
-        width={mapImage?.width}
-        height={mapImage?.height}
-        onMouseMove={moveHandler.handleMouseMove}
-        onMouseDown={moveHandler.handleMouseDown}
-        onMouseUp={moveHandler.handleMouseUp}
-        ref={stageRef}
-      >
-        <Layer id='map-layer'>
-          <Rect width={mapImage?.width} height={mapImage?.height} fillPatternImage={mapImage} />
-        </Layer>
-        <Layer ref={fogLayerRef} listening={false} id='fog-layer'>
-          {/* TODO: Add image fill to fog */}
-          <Rect width={mapImage?.width} height={mapImage?.height} fillPatternImage={fogImage} />
-        </Layer>
-        <Layer id='player-marker-layer'>
-          {/* Player marker */}
-          <Circle x={playerPosition.x} y={playerPosition.y} radius={10} fill='red' />
-        </Layer>
-      </Stage>
-      {/* TODO: Move outside this component if possible */}
-      <PlayerWrapper playerMarker={PlayerMarker} playerPosition={playerPosition} />
-      <ProgressTracker progressPercentage={percentageUncovered} />
-    </>
+    <Stage
+      ref={stageRef}
+      width={mapImage.width}
+      height={mapImage.height}
+      onMouseMove={moveHandler.handleMouseMove}
+      onMouseDown={moveHandler.handleMouseDown}
+      onMouseUp={moveHandler.handleMouseUp}
+    >
+      <Layer id='map-layer'>
+        <Rect width={mapImage?.width} height={mapImage.height} fillPatternImage={mapImage} />
+      </Layer>
+      <Layer id='fog-layer' ref={fogLayerRef as LayerRef} listening={false}>
+        <Rect width={mapImage?.width} height={mapImage.height} fillPatternImage={fogImage} />
+      </Layer>
+    </Stage>
   );
 };
