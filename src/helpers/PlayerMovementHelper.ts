@@ -1,4 +1,4 @@
-import { mapSize, Position } from '~/model/types';
+import { mapSize, PlayerDirection, PlayerMoveEvent, Position } from '~/model/types';
 
 const RESTRICTED_RADIUS = 50;
 const MAGNITUDE = 5;
@@ -38,7 +38,7 @@ export const getNormalizedDirections = (
   };
 };
 
-export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position) => {
+export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position): Position => {
   switch (key) {
     case 'ArrowLeft':
       return {
@@ -65,7 +65,11 @@ export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position) =>
   }
 };
 
-export const checkForRestrictedMove = (key: string, prevPosition: Position, mapSize: mapSize) => {
+export const checkForRestrictedMove = (
+  key: string,
+  prevPosition: Position,
+  mapSize: mapSize,
+): boolean => {
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
 
   const restrictedLeft = key === 'ArrowLeft' && prevPosition.x <= leftRestrict;
@@ -76,4 +80,31 @@ export const checkForRestrictedMove = (key: string, prevPosition: Position, mapS
   const isRestricted = restrictedLeft || restrictedRight || restrictedBottom || restrictedTop;
 
   return isRestricted;
+};
+
+export const getPlayerDirection = (
+  e: PlayerMoveEvent,
+  playerPosition: Position,
+): PlayerDirection | undefined => {
+  const isMouseEvent = e.type === 'mousemove';
+  const isArrowEvent = e.type === 'keydown';
+  if (isMouseEvent) return getDirectionOnMouseMove(e as unknown as MouseEvent, playerPosition);
+  if (isArrowEvent) return getDirectionOnArrowMove(e as KeyboardEvent);
+  return;
+};
+
+const getDirectionOnMouseMove = (e: MouseEvent, playerPosition: Position) =>
+  e.evt.offsetX < playerPosition.x ? PlayerDirection.LEFT : PlayerDirection.RIGHT;
+
+const getDirectionOnArrowMove = (e: KeyboardEvent) => {
+  switch (e.key) {
+    case 'ArrowLeft':
+      return PlayerDirection.LEFT;
+    case 'ArrowRight':
+      return PlayerDirection.RIGHT;
+    case 'ArrowUp':
+    case 'ArrowDown':
+    default:
+      return;
+  }
 };

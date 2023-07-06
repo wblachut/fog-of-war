@@ -18,3 +18,10 @@ export type CustomMouseEvent = KonvaEventObject<MouseEvent>;
 export type StageRef = MutableRefObject<Stage> | null;
 export type CanvasRef = MutableRefObject<HTMLCanvasElement> | null;
 export type LayerRef = LegacyRef<Layer>;
+
+export enum PlayerDirection {
+  LEFT = 'left',
+  RIGHT = 'right',
+}
+
+export type PlayerMoveEvent = CustomMouseEvent | KeyboardEvent;

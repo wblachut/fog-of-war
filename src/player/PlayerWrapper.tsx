@@ -1,11 +1,18 @@
-import { Position } from '~/model/types';
+import { PlayerDirection, Position } from '~/model/types';
 
 interface PlayerWrapperProps {
   playerMarker: JSX.Element;
   playerPosition: Position;
+  playerDirection: PlayerDirection;
 }
 
-export const PlayerWrapper = ({ playerMarker, playerPosition }: PlayerWrapperProps) => {
+export const PlayerWrapper = ({
+  playerMarker,
+  playerPosition,
+  playerDirection,
+}: PlayerWrapperProps) => {
+  const isStaringLeft = playerDirection === PlayerDirection.LEFT;
+
   return (
     <div
       style={{
@@ -15,6 +22,7 @@ export const PlayerWrapper = ({ playerMarker, playerPosition }: PlayerWrapperPro
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        transform: `scaleX(${isStaringLeft ? -1 : 1})`,
       }}
       id='player-marker-wrapper'
     >

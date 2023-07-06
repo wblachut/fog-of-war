@@ -1,12 +1,12 @@
-import { PlayerMarker } from '~/player/PlayerMarker';
-import { FogOfWarCanvas } from './FogOfWarCanvas';
 import BoarMarker from '~/assets/boar-marker.webp';
-import { useMapCanvas } from './hooks/useMapCanvas';
-import { usePlayerMovement } from './hooks/usePlayerMovement';
+import { CanvasRef, StageRef } from '~/model/types';
+import { PlayerMarker } from '~/player/PlayerMarker';
 import { PlayerWrapper } from '~/player/PlayerWrapper';
 import { ProgressTracker } from '../ProgressTracker';
+import { FogOfWarCanvas } from './FogOfWarCanvas';
+import { useMapCanvas } from './hooks/useMapCanvas';
 import { useMapImage } from './hooks/useMapImage';
-import { CanvasRef, StageRef } from '~/model/types';
+import { usePlayerMovement } from './hooks/usePlayerMovement';
 
 export interface ExplorerMapProps {
   mapSrc: HTMLImageElement['src'];
@@ -31,6 +31,7 @@ export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
       <PlayerWrapper
         playerMarker={<PlayerMarker playerImageSrc={BoarMarker} />}
         playerPosition={playerPosition}
+        playerDirection={moveHandler.playerDirection}
       />
       <ProgressTracker progressPercentage={percentageUncovered} />
     </>

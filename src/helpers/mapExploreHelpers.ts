@@ -27,7 +27,6 @@ export const calculateFogCoverage = (canvas: HTMLCanvasElement): number => {
   const data = getPixelBuffer(canvas);
   const totalPixels = canvas.width * canvas.height;
   const newPercentageUncovered = getRoundedPercentage(getPixelRatio(data, totalPixels));
-  console.log(newPercentageUncovered);
 
   return newPercentageUncovered;
 };

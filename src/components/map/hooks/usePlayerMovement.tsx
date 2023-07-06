@@ -1,15 +1,24 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import {
+  checkForRestrictedMove,
   getNormalizedDirections,
   getPlayerCoordsOnKeydown,
-  checkForRestrictedMove,
+  getPlayerDirection,
 } from '~/helpers/PlayerMovementHelper';
-import { CustomMouseEvent, mapSize, Position } from '~/model/types';
+import {
+  CustomMouseEvent,
+  PlayerDirection,
+  PlayerMoveEvent,
+  Position,
+  mapSize,
+} from '~/model/types';
 
 const STARTING_POSITION = { x: 560, y: 380 };
 const DEFAULT_POSITION = { x: 0, y: 0 };
+const LEFT_CLICK_BUTTON = 2;
 
 export interface MoveHandler {
+  playerDirection: PlayerDirection;
   handleMouseMove: (e: CustomMouseEvent) => void;
   handleMouseDown: () => void;
   handleMouseUp: () => void;
@@ -18,21 +27,28 @@ export interface MoveHandler {
 export const usePlayerMovement = (mapSize: mapSize) => {
   const [playerPosition, setPlayerPosition] = useState<Position>(DEFAULT_POSITION);
   const [isMousePressed, setIsMousePressed] = useState(false);
+  const [playerDirection, setPlayerDirection] = useState<PlayerDirection>(PlayerDirection.LEFT);
+
+  const handlePlayerDirection = (e: PlayerMoveEvent, playerPosition: Position) => {
+    const newDirection = getPlayerDirection(e, playerPosition);
+    setPlayerDirection((prevDirection) => newDirection ?? prevDirection);
+  };
 
   const handleMouseMove = useCallback(
     (e: CustomMouseEvent) => {
       const stage = e.currentTarget.getStage();
       const position = stage?.getPointerPosition();
 
-      if (isMousePressed) {
-        const mousePosition = position ?? DEFAULT_POSITION;
+      if (!isMousePressed && e.evt.button !== LEFT_CLICK_BUTTON) return;
 
-        setPlayerPosition((prevPosition) =>
-          getNormalizedDirections(prevPosition, mousePosition, mapSize),
-        );
-      }
+      const mousePosition = position ?? DEFAULT_POSITION;
+      handlePlayerDirection(e, playerPosition);
+
+      setPlayerPosition((prevPosition) =>
+        getNormalizedDirections(prevPosition, mousePosition, mapSize),
+      );
     },
-    [isMousePressed, mapSize],
+    [isMousePressed, mapSize, playerPosition],
   );
 
   const handleMouseDown = useCallback(() => {
@@ -50,6 +66,7 @@ export const usePlayerMovement = (mapSize: mapSize) => {
       if (isRestricted) return;
       const newCoordinates = getPlayerCoordsOnKeydown(e.key, playerPosition);
       setPlayerPosition(newCoordinates);
+      handlePlayerDirection(e, playerPosition);
     };
 
     window.addEventListener('keydown', handleArrowMove);
@@ -70,6 +87,7 @@ export const usePlayerMovement = (mapSize: mapSize) => {
   }, [MoveToBeginnerLocation]);
 
   const moveHandler = {
+    playerDirection,
     handleMouseMove,
     handleMouseDown,
     handleMouseUp,
