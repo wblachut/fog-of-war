@@ -1,17 +1,10 @@
-import { useRef, useState, useEffect, useCallback, RefObject } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import useImage from 'use-image';
 import { usePlayerMovement } from './usePlayerMovement';
-import {
-  clearFogOfWar,
-  getPixelBuffer,
-  getPixelRatio,
-  getRoundedPercentage,
-  setUpImage,
-} from '~/helpers/mapExploreHelpers';
+import { calculateFogCoverage, clearFogOfWar, setUpImage } from '~/helpers/mapExploreHelpers';
 import { CanvasRef, StageRef, mapSize } from '~/model/types';
 import fog from '../../../assets/fog-homm3.png';
 
-const PLAYER_SIGHT_RADIUS = 80;
 const FOG_SRC = fog;
 
 export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
@@ -25,7 +18,7 @@ export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
   const { playerPosition, moveHandler } = usePlayerMovement(mapSize);
   const [percentageUncovered, setPercentageUncovered] = useState(0);
 
-  /* HANDLE IMAGE SETUP */
+  /* IMAGE SETUP */
   useEffect(() => {
     const image = setUpImage(mapSrc);
     image.onload = () => {
@@ -33,29 +26,25 @@ export const useMapCanvas = (mapSrc: HTMLImageElement['src']) => {
     };
   }, [mapSrc]);
 
-  /* HANDLE MAP UNCOVERING */
+  /* PROGRESS TRACKING */
+  const getFogCoverage = useCallback(() => {
+    const fogLayer = fogLayerRef.current;
+    if (!fogLayer) return;
+    const newPercentageUncovered = calculateFogCoverage(fogLayer?.canvas._canvas);
+    setPercentageUncovered(newPercentageUncovered);
+  }, []);
+
+  /* MAP UNCOVERING */
   useEffect(() => {
     const stage = stageRef.current;
     const fogLayer = fogLayerRef.current;
     if (!stage || !fogLayer) return;
-    clearFogOfWar(fogLayer, playerPosition, PLAYER_SIGHT_RADIUS);
+    clearFogOfWar(fogLayer, playerPosition);
 
-    // Request animation frame to calculate fog coverage at a lower frequency
-    const requestID = requestAnimationFrame(calculateFogCoverage);
+    const requestID = requestAnimationFrame(getFogCoverage);
 
     return () => cancelAnimationFrame(requestID);
-  }, [playerPosition]);
-
-  const calculateFogCoverage = useCallback(() => {
-    const fogLayer = fogLayerRef.current;
-    if (!fogLayer) return;
-    const canvas = fogLayer?.canvas._canvas;
-    const data = getPixelBuffer(canvas);
-    const totalPixels = canvas.width * canvas.height;
-    const newPercentageUncovered = getRoundedPercentage(getPixelRatio(data, totalPixels));
-    setPercentageUncovered(newPercentageUncovered);
-    console.log(newPercentageUncovered);
-  }, []);
+  }, [getFogCoverage, playerPosition]);
 
   return {
     stageRef,

@@ -1,7 +1,16 @@
 import { mapSize, Position } from '~/model/types';
 
-const RESTRICTED_RADIUS = 25;
-const MAGNITUDE = 10;
+const RESTRICTED_RADIUS = 50;
+const MAGNITUDE = 5;
+
+function getMapRestrictions(canvasSize: mapSize, radius = RESTRICTED_RADIUS) {
+  const leftRestrict = radius;
+  const topRestrict = radius;
+  const rightRestrict = canvasSize.width - radius;
+  const bottomRestrict = canvasSize.height - radius;
+
+  return { leftRestrict, topRestrict, rightRestrict, bottomRestrict };
+}
 
 export const getNormalizedDirections = (
   prevPosition: Position,
@@ -68,12 +77,3 @@ export const checkForRestrictedMove = (key: string, prevPosition: Position, mapS
 
   return isRestricted;
 };
-
-function getMapRestrictions(canvasSize: mapSize, radius = RESTRICTED_RADIUS) {
-  const leftRestrict = radius;
-  const topRestrict = radius;
-  const rightRestrict = canvasSize.width - radius;
-  const bottomRestrict = canvasSize.height - radius;
-
-  return { leftRestrict, topRestrict, rightRestrict, bottomRestrict };
-}
