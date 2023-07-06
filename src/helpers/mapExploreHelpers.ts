@@ -17,9 +17,9 @@ export const clearFogOfWar = (
   blurRadius = PLAYER_BLUR_RADIUS,
 ) => {
   if (!fogLayer) return;
+  const { x, y } = playerPosition;
   const canvas = fogLayer.canvas._canvas;
   const context = canvas.getContext('2d');
-  const { x, y } = playerPosition;
 
   context.fillStyle = getGradientFillStyle(context, playerPosition, radius, blurRadius);
   context.globalCompositeOperation = 'destination-out';
@@ -36,13 +36,17 @@ const getGradientFillStyle = (
 ) => {
   const { x, y } = playerPosition;
   const gradient = context.createRadialGradient(x, y, radius, x, y, blurRadius);
+
   gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
   gradient.addColorStop(0.5, 'rgba(0, 0, 0, 0.2)');
   gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
   return gradient;
 };
 
-export const getPixelBuffer = (canvas: HTMLCanvasElement): Uint8Array => {
+const getPixelBuffer = (canvas: HTMLCanvasElement): Uint8Array => {
+  if (canvas.width === 0 || canvas.width === 0) return new Uint8Array(0);
+
   const context = canvas?.getContext('2d');
   const imageData = context?.getImageData(0, 0, canvas.width, canvas.height);
   const pixelBuffer = new Uint8Array(imageData!.data.buffer);
@@ -50,7 +54,7 @@ export const getPixelBuffer = (canvas: HTMLCanvasElement): Uint8Array => {
   return pixelBuffer;
 };
 
-export const getPixelRatio = (data: Uint8Array, totalPixels: number): number => {
+const getPixelRatio = (data: Uint8Array, totalPixels: number): number => {
   let coveredPixels = 0;
 
   for (let i = 0; i < data.length; i += 4) {
@@ -62,7 +66,7 @@ export const getPixelRatio = (data: Uint8Array, totalPixels: number): number => 
   return (totalPixels - coveredPixels) / totalPixels;
 };
 
-export const getRoundedPercentage = (ratio: number) => Math.round(ratio * 100);
+const getRoundedPercentage = (ratio: number) => Math.round(ratio * 100);
 
 export const calculateFogCoverage = (canvas: HTMLCanvasElement): number => {
   const data = getPixelBuffer(canvas);
