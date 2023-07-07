@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useImage from 'use-image';
 import { setUpImage } from '~/helpers/imageSettupHelpers';
-import { mapSize } from '~/model/types';
+import { mapSize } from '~/model/customTypes';
 
 export const useMapImage = (mapSrc: HTMLImageElement['src']) => {
   const [mapImage] = useImage(mapSrc);

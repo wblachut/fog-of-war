@@ -1,8 +1,8 @@
 import { Layer, Rect, Stage } from 'react-konva';
-import { CanvasRef, LayerRef, StageRef } from '~/model/types';
+import { CanvasRef, LayerRef, StageRef } from '~/model/customTypes';
 import { MoveHandler } from './hooks/usePlayerMovement';
 
-interface FogOfWarCanvasProps {
+interface FogOfWarStageProps {
   stageRef: StageRef;
   fogLayerRef: CanvasRef;
   mapImage: HTMLImageElement;
@@ -10,13 +10,13 @@ interface FogOfWarCanvasProps {
   moveHandler: MoveHandler;
 }
 
-export const FogOfWarCanvas = ({
+export const FogOfWarStage = ({
   stageRef,
   fogLayerRef,
   mapImage,
   fogImage,
   moveHandler,
-}: FogOfWarCanvasProps) => {
+}: FogOfWarStageProps) => {
   return (
     <Stage
       ref={stageRef}

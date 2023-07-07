@@ -1,7 +1,7 @@
-import { mapSize, PlayerDirection, PlayerMoveEvent, Position } from '~/model/types';
+import { mapSize, PlayerDirection, PlayerMoveEvent, Position } from '~/model/customTypes';
 
 const RESTRICTED_RADIUS = 50;
-const MAGNITUDE = 5;
+const MAGNITUDE = 10;
 
 function getMapRestrictions(canvasSize: mapSize, radius = RESTRICTED_RADIUS) {
   const leftRestrict = radius;

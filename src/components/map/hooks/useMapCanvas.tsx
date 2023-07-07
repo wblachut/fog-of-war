@@ -1,7 +1,7 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useImage from 'use-image';
 import { calculateFogCoverage, clearFogOfWar } from '~/helpers/mapExploreHelpers';
-import { CanvasRef, Position, StageRef } from '~/model/types';
+import { CanvasRef, Position, StageRef } from '~/model/customTypes';
 import fog from '../../../assets/fog-homm3.png';
 
 const FOG_SRC = fog;

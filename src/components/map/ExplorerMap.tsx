@@ -1,9 +1,9 @@
 import BoarMarker from '~/assets/boar-marker.webp';
-import { CanvasRef, StageRef } from '~/model/types';
+import { CanvasRef, StageRef } from '~/model/customTypes';
 import { PlayerMarker } from '~/player/PlayerMarker';
 import { PlayerWrapper } from '~/player/PlayerWrapper';
 import { ProgressTracker } from '../ProgressTracker';
-import { FogOfWarCanvas } from './FogOfWarCanvas';
+import { FogOfWarStage } from './FogOfWarStage';
 import { useMapCanvas } from './hooks/useMapCanvas';
 import { useMapImage } from './hooks/useMapImage';
 import { usePlayerMovement } from './hooks/usePlayerMovement';
@@ -21,7 +21,7 @@ export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
 
   return (
     <>
-      <FogOfWarCanvas
+      <FogOfWarStage
         stageRef={stageRef as unknown as StageRef}
         fogLayerRef={fogLayerRef as unknown as CanvasRef}
         mapImage={mapImage}

@@ -4,14 +4,14 @@ import {
   getNormalizedDirections,
   getPlayerCoordsOnKeydown,
   getPlayerDirection,
-} from '~/helpers/PlayerMovementHelper';
+} from '~/helpers/PlayerMovementHelpers';
 import {
   CustomMouseEvent,
   PlayerDirection,
   PlayerMoveEvent,
   Position,
   mapSize,
-} from '~/model/types';
+} from '~/model/customTypes';
 
 const STARTING_POSITION = { x: 560, y: 380 };
 const DEFAULT_POSITION = { x: 0, y: 0 };
