@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   checkForRestrictedMove,
   getNormalizedDirections,
@@ -27,7 +27,7 @@ export interface MoveHandler {
 export const usePlayerMovement = (mapSize: mapSize) => {
   const [playerPosition, setPlayerPosition] = useState<Position>(DEFAULT_POSITION);
   const [isMousePressed, setIsMousePressed] = useState(false);
-  const [playerDirection, setPlayerDirection] = useState<PlayerDirection>(PlayerDirection.LEFT);
+  const [playerDirection, setPlayerDirection] = useState(PlayerDirection.RIGHT);
 
   const handlePlayerDirection = (e: PlayerMoveEvent, playerPosition: Position) => {
     const newDirection = getPlayerDirection(e, playerPosition);
@@ -81,9 +81,13 @@ export const usePlayerMovement = (mapSize: mapSize) => {
   }, []);
 
   // SET PLAYER IN THE STARTING POINT
-  useLayoutEffect(() => {
-    // TODO: map unfolding not working after callback
-    MoveToBeginnerLocation();
+  useEffect(() => {
+    // TODO: Change code to obtain same effect
+    const timeoutId = setTimeout(() => {
+      MoveToBeginnerLocation();
+    }, 20);
+
+    return () => clearTimeout(timeoutId);
   }, [MoveToBeginnerLocation]);
 
   const moveHandler = {

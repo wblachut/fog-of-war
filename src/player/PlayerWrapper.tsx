@@ -1,4 +1,5 @@
 import { PlayerDirection, Position } from '~/model/customTypes';
+import { PlayerWrapperStyles } from './PlayerWrapper.styles';
 
 interface PlayerWrapperProps {
   playerMarker: JSX.Element;
@@ -14,18 +15,7 @@ export const PlayerWrapper = ({
   const isStaringLeft = playerDirection === PlayerDirection.LEFT;
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: playerPosition.x,
-        top: playerPosition.y,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        transform: `scaleX(${isStaringLeft ? -1 : 1})`,
-      }}
-      id='player-marker-wrapper'
-    >
+    <div style={PlayerWrapperStyles(playerPosition, isStaringLeft)} id='player-marker-wrapper'>
       {playerMarker}
     </div>
   );

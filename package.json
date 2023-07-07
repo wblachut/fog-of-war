@@ -17,6 +17,7 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-konva": "^18.2.10",
+    "react-spring": "^9.7.2",
     "use-image": "^1.1.1"
   },
   "devDependencies": {

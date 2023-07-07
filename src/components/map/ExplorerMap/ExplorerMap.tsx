@@ -2,11 +2,11 @@ import BoarMarker from '~/assets/boar-marker.webp';
 import { CanvasRef, StageRef } from '~/model/customTypes';
 import { PlayerMarker } from '~/player/PlayerMarker';
 import { PlayerWrapper } from '~/player/PlayerWrapper';
-import { ProgressTracker } from '../ProgressTracker';
-import { FogOfWarStage } from './FogOfWarStage';
-import { useMapCanvas } from './hooks/useMapCanvas';
-import { useMapImage } from './hooks/useMapImage';
-import { usePlayerMovement } from './hooks/usePlayerMovement';
+import { FogOfWarStage } from '../FogOfWarStage/FogOfWarStage';
+import { ProgressTracker } from '../ProgressTracker/ProgressTracker';
+import { useMapCanvas } from '../hooks/useMapCanvas';
+import { useMapImage } from '../hooks/useMapImage';
+import { usePlayerMovement } from '../hooks/usePlayerMovement';
 
 export interface ExplorerMapProps {
   mapSrc: HTMLImageElement['src'];

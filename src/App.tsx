@@ -1,10 +1,12 @@
 import map from './assets/map-homm3.png';
-import { ExplorerMap } from './components/map/ExplorerMap';
+import InfoModal from './components/info/InfoModal';
+import { ExplorerMap } from './components/map/ExplorerMap/ExplorerMap';
 
 function App() {
   return (
     <>
       <ExplorerMap mapSrc={map} />
+      <InfoModal />
     </>
   );
 }
