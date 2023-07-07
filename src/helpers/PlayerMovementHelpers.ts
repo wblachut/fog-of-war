@@ -1,6 +1,7 @@
 import { mapSize, PlayerDirection, PlayerMoveEvent, Position } from '~/model/customTypes';
 
 const RESTRICTED_RADIUS = 50;
+const MINIMAL_DISTANCE = 50;
 const MAGNITUDE = 10;
 
 function getMapRestrictions(canvasSize: mapSize, radius = RESTRICTED_RADIUS) {
@@ -23,6 +24,7 @@ export const getNormalizedDirections = (
   const dX = newX - prevX;
   const dY = newY - prevY;
   const dist = Math.sqrt(dX * dX + dY * dY);
+  if (dist < MINIMAL_DISTANCE) return prevPosition;
   const normalizedDX = (dX / dist) * MAGNITUDE;
   const normalizedDY = (dY / dist) * MAGNITUDE;
 
