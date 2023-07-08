@@ -1,11 +1,13 @@
+import { CSSProperties } from 'react';
 import BoarMarker from '~/assets/boar-marker.webp';
-import { CanvasRef, StageRef } from '~/model/customTypes.model';
+import { CanvasRef, ElementSize, StageRef } from '~/model/customTypes.model';
 import { PlayerMarker } from '~/player/PlayerMarker';
 import { PlayerWrapper } from '~/player/PlayerWrapper';
 import { ProgressTracker } from '../ProgressTracker/ProgressTracker';
 import { useMapCanvas } from '../hooks/useMapCanvas';
 import { useMapImage } from '../hooks/useMapImage';
 import { usePlayerMovement } from '../hooks/usePlayerMovement';
+import { ExplorerBorderStyle } from './ExplorerBorder.style';
 import { FogOfWarStage } from './FogOfWarStage/FogOfWarStage';
 
 export interface ExplorerMapProps {
@@ -34,6 +36,20 @@ export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
         playerDirection={moveHandler.playerDirection}
       />
       <ProgressTracker progressPercentage={percentageUncovered} />
+      <ExplorerBorder
+        width={document.documentElement.clientWidth}
+        height={document.documentElement.clientHeight}
+      />
     </>
   );
 };
+
+export const ExplorerBorder = ({ width, height }: ElementSize) => (
+  <div style={getMapBorderStyles(width, height)} />
+);
+
+export const getMapBorderStyles = (width: number, height: number): CSSProperties => ({
+  width: width - 40,
+  height: height - 40,
+  ...ExplorerBorderStyle,
+});

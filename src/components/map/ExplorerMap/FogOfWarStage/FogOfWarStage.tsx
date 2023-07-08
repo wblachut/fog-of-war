@@ -1,7 +1,6 @@
 import { Layer, Rect, Stage } from 'react-konva';
 import { CanvasRef, LayerRef, StageRef } from '~/model/customTypes.model';
 import { MoveHandler } from '../../hooks/usePlayerMovement';
-import { MapWrapperStyle } from './FogOfWarStage.style';
 
 interface FogOfWarStageProps {
   stageRef: StageRef;
@@ -19,7 +18,7 @@ export const FogOfWarStage = ({
   moveHandler,
 }: FogOfWarStageProps) => {
   return (
-    <div style={MapWrapperStyle}>
+    <>
       <Stage
         ref={stageRef}
         width={mapImage.width}
@@ -35,6 +34,6 @@ export const FogOfWarStage = ({
           <Rect width={mapImage?.width} height={mapImage.height} fillPatternImage={fogImage} />
         </Layer>
       </Stage>
-    </div>
+    </>
   );
 };

@@ -6,10 +6,15 @@ import {
   getPlayerDirection,
 } from '~/helpers/PlayerMovementHelpers';
 import { PlayerDirection } from '~/model/PlayerDirectionEnum';
-import { CustomMouseEvent, MapSize, PlayerMoveEvent, Position } from '~/model/customTypes.model';
+import {
+  CustomMouseEvent,
+  ElementSize,
+  PlayerMoveEvent,
+  Position,
+} from '~/model/customTypes.model';
 
 const STARTING_POSITION = { x: 560, y: 380 };
-const DEFAULT_POSITION = { x: 0, y: 0 };
+const HIDDEN_POSITION = { x: -100, y: -100 };
 const LEFT_CLICK_BUTTON = 2;
 
 export interface MoveHandler {
@@ -19,8 +24,8 @@ export interface MoveHandler {
   handleMouseUp: () => void;
 }
 
-export const usePlayerMovement = (mapSize: MapSize) => {
-  const [playerPosition, setPlayerPosition] = useState<Position>(DEFAULT_POSITION);
+export const usePlayerMovement = (mapSize: ElementSize) => {
+  const [playerPosition, setPlayerPosition] = useState<Position>(HIDDEN_POSITION);
   const [isMousePressed, setIsMousePressed] = useState(false);
   const [playerDirection, setPlayerDirection] = useState(PlayerDirection.RIGHT);
 
@@ -36,7 +41,7 @@ export const usePlayerMovement = (mapSize: MapSize) => {
 
       if (!isMousePressed && e.evt.button !== LEFT_CLICK_BUTTON) return;
 
-      const mousePosition = position ?? DEFAULT_POSITION;
+      const mousePosition = position as Position;
       handlePlayerDirection(e, playerPosition);
 
       setPlayerPosition((prevPosition) =>

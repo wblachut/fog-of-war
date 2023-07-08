@@ -1,11 +1,16 @@
 import { PlayerDirection } from '~/model/PlayerDirectionEnum';
-import { CustomMouseEvent, MapSize, PlayerMoveEvent, Position } from '~/model/customTypes.model';
+import {
+  CustomMouseEvent,
+  ElementSize,
+  PlayerMoveEvent,
+  Position,
+} from '~/model/customTypes.model';
 
 const RESTRICTED_RADIUS = 50;
 const MINIMAL_DISTANCE = 50;
 const MAGNITUDE = 20;
 
-function getMapRestrictions(canvasSize: MapSize, radius = RESTRICTED_RADIUS) {
+function getMapRestrictions(canvasSize: ElementSize, radius = RESTRICTED_RADIUS) {
   const leftRestrict = radius;
   const topRestrict = radius;
   const rightRestrict = canvasSize.width - radius;
@@ -17,7 +22,7 @@ function getMapRestrictions(canvasSize: MapSize, radius = RESTRICTED_RADIUS) {
 export const getNormalizedDirections = (
   prevPosition: Position,
   position: Position,
-  mapSize: MapSize,
+  mapSize: ElementSize,
 ): Position => {
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
   const { x: prevX, y: prevY } = prevPosition;
@@ -71,7 +76,7 @@ export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position): P
 export const checkForRestrictedMove = (
   key: string,
   prevPosition: Position,
-  mapSize: MapSize,
+  mapSize: ElementSize,
 ): boolean => {
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
 

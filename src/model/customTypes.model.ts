@@ -8,7 +8,7 @@ export type Position = {
   y: number;
 };
 
-export type MapSize = {
+export type ElementSize = {
   width: number;
   height: number;
 };
