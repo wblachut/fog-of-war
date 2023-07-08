@@ -1,3 +1,5 @@
+@import './common/scrollbar.css';
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -17,7 +19,6 @@
   margin: 0;
   padding: 0;
   text-align: center;
-  /* overflow-x: hidden; */
 }
 
 body {
@@ -26,6 +27,5 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* overflow: hidden; */
   cursor: url('https://cf-media.herowo.game/custom-graphics/DEF-CUR/CRDEFLT/CursrD00.cur'), auto;
 }
