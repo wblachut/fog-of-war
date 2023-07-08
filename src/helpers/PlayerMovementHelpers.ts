@@ -1,10 +1,11 @@
-import { mapSize, PlayerDirection, PlayerMoveEvent, Position } from '~/model/customTypes';
+import { PlayerDirection } from '~/model/PlayerDirectionEnum';
+import { CustomMouseEvent, MapSize, PlayerMoveEvent, Position } from '~/model/customTypes.model';
 
 const RESTRICTED_RADIUS = 50;
 const MINIMAL_DISTANCE = 50;
-const MAGNITUDE = 10;
+const MAGNITUDE = 20;
 
-function getMapRestrictions(canvasSize: mapSize, radius = RESTRICTED_RADIUS) {
+function getMapRestrictions(canvasSize: MapSize, radius = RESTRICTED_RADIUS) {
   const leftRestrict = radius;
   const topRestrict = radius;
   const rightRestrict = canvasSize.width - radius;
@@ -16,7 +17,7 @@ function getMapRestrictions(canvasSize: mapSize, radius = RESTRICTED_RADIUS) {
 export const getNormalizedDirections = (
   prevPosition: Position,
   position: Position,
-  mapSize: mapSize,
+  mapSize: MapSize,
 ): Position => {
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
   const { x: prevX, y: prevY } = prevPosition;
@@ -70,7 +71,7 @@ export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position): P
 export const checkForRestrictedMove = (
   key: string,
   prevPosition: Position,
-  mapSize: mapSize,
+  mapSize: MapSize,
 ): boolean => {
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
 
@@ -90,14 +91,13 @@ export const getPlayerDirection = (
 ): PlayerDirection | undefined => {
   const isMouseEvent = e.type === 'mousemove';
   const isArrowEvent = e.type === 'keydown';
-  if (isMouseEvent) return getDirectionOnMouseMove(e as unknown as MouseEvent, playerPosition);
+  if (isMouseEvent) return getDirectionOnMouseMove(e as CustomMouseEvent, playerPosition);
   if (isArrowEvent) return getDirectionOnArrowMove(e as KeyboardEvent);
   return;
 };
 
-const getDirectionOnMouseMove = (e: MouseEvent, playerPosition: Position) =>
+const getDirectionOnMouseMove = (e: CustomMouseEvent, playerPosition: Position) =>
   e.evt.offsetX < playerPosition.x ? PlayerDirection.LEFT : PlayerDirection.RIGHT;
-
 const getDirectionOnArrowMove = (e: KeyboardEvent) => {
   switch (e.key) {
     case 'ArrowLeft':

@@ -1,4 +1,4 @@
-import { CanvasRef, Position } from '~/model/customTypes';
+import { CanvasRef, Position } from '~/model/customTypes.model';
 
 const PLAYER_SIGHT_RADIUS = 140;
 const PLAYER_BLUR_RADIUS = 200;

@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { Position } from '~/model/customTypes';
+import { Position } from '~/model/customTypes.model';
 
 export const PlayerWrapperStyles = (
   playerPosition: Position,

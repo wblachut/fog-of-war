@@ -2,12 +2,9 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  /* background-color: rgb(0, 0, 2); */
-  background-color: whitesmoke;
-
+  background-color: rgb(0, 0, 2);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -20,8 +17,7 @@
   margin: 0;
   padding: 0;
   text-align: center;
-  overflow-x: hidden;
-  /* overflow-y: hidden; */
+  /* overflow-x: hidden; */
 }
 
 body {
@@ -30,21 +26,6 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  overflow: hidden;
+  /* overflow: hidden; */
   cursor: url('https://cf-media.herowo.game/custom-graphics/DEF-CUR/CRDEFLT/CursrD00.cur'), auto;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-.border {
-  border: 1px solid #000;
-  box-shadow: 0 0 0 20px #000, 0 0 0 30px #000;
-  /* border-image: url('/media/examples/border-diamonds.png') 30; */
-}
-
-.homm3-box {
-
 }

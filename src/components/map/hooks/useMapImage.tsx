@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import useImage from 'use-image';
 import { setUpImage } from '~/helpers/imageSettupHelpers';
-import { mapSize } from '~/model/customTypes';
+import { MapSize } from '~/model/customTypes.model';
 
 export const useMapImage = (mapSrc: HTMLImageElement['src']) => {
   const [mapImage] = useImage(mapSrc);
-  const [mapSize, setMapSize] = useState<mapSize>({ width: 0, height: 0 });
+  const [mapSize, setMapSize] = useState<MapSize>({ width: 0, height: 0 });
 
   /* IMAGE SETUP */
   useEffect(() => {

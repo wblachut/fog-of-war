@@ -1,6 +1,6 @@
 import { Layer, Rect, Stage } from 'react-konva';
-import { CanvasRef, LayerRef, StageRef } from '~/model/customTypes';
-import { MoveHandler } from '../hooks/usePlayerMovement';
+import { CanvasRef, LayerRef, StageRef } from '~/model/customTypes.model';
+import { MoveHandler } from '../../hooks/usePlayerMovement';
 import { MapWrapperStyle } from './FogOfWarStage.style';
 
 interface FogOfWarStageProps {

@@ -5,13 +5,8 @@ import {
   getPlayerCoordsOnKeydown,
   getPlayerDirection,
 } from '~/helpers/PlayerMovementHelpers';
-import {
-  CustomMouseEvent,
-  PlayerDirection,
-  PlayerMoveEvent,
-  Position,
-  mapSize,
-} from '~/model/customTypes';
+import { PlayerDirection } from '~/model/PlayerDirectionEnum';
+import { CustomMouseEvent, MapSize, PlayerMoveEvent, Position } from '~/model/customTypes.model';
 
 const STARTING_POSITION = { x: 560, y: 380 };
 const DEFAULT_POSITION = { x: 0, y: 0 };
@@ -24,7 +19,7 @@ export interface MoveHandler {
   handleMouseUp: () => void;
 }
 
-export const usePlayerMovement = (mapSize: mapSize) => {
+export const usePlayerMovement = (mapSize: MapSize) => {
   const [playerPosition, setPlayerPosition] = useState<Position>(DEFAULT_POSITION);
   const [isMousePressed, setIsMousePressed] = useState(false);
   const [playerDirection, setPlayerDirection] = useState(PlayerDirection.RIGHT);

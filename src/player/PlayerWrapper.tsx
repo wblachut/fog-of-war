@@ -1,5 +1,6 @@
-import { PlayerDirection, Position } from '~/model/customTypes';
+import { Position } from '~/model/customTypes.model';
 import { PlayerWrapperStyles } from './PlayerWrapper.styles';
+import { PlayerDirection } from '~/model/PlayerDirectionEnum';
 
 interface PlayerWrapperProps {
   playerMarker: JSX.Element;
