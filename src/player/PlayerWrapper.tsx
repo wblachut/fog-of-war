@@ -1,6 +1,6 @@
+import { PlayerDirection } from '~/model/PlayerDirectionEnum';
 import { Position } from '~/model/customTypes.model';
 import { PlayerWrapperStyles } from './PlayerWrapper.styles';
-import { PlayerDirection } from '~/model/PlayerDirectionEnum';
 
 interface PlayerWrapperProps {
   playerMarker: JSX.Element;
@@ -16,7 +16,11 @@ export const PlayerWrapper = ({
   const isStaringLeft = playerDirection === PlayerDirection.LEFT;
 
   return (
-    <div style={PlayerWrapperStyles(playerPosition, isStaringLeft)} id='player-marker-wrapper'>
+    <div
+      data-testid='player-wrapper'
+      style={PlayerWrapperStyles(playerPosition, isStaringLeft)}
+      id='player-marker-wrapper'
+    >
       {playerMarker}
     </div>
   );

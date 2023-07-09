@@ -10,7 +10,7 @@ const RESTRICTED_RADIUS = 50;
 const MINIMAL_DISTANCE = 50;
 const MAGNITUDE = 20;
 
-function getMapRestrictions(canvasSize: ElementSize, radius = RESTRICTED_RADIUS) {
+export function getMapRestrictions(canvasSize: ElementSize, radius = RESTRICTED_RADIUS) {
   const leftRestrict = radius;
   const topRestrict = radius;
   const rightRestrict = canvasSize.width - radius;
@@ -91,7 +91,7 @@ export const checkForRestrictedMove = (
 };
 
 export const getPlayerDirection = (
-  e: PlayerMoveEvent,
+  e: Partial<PlayerMoveEvent>,
   playerPosition: Position,
 ): PlayerDirection | undefined => {
   const isMouseEvent = e.type === 'mousemove';
@@ -101,9 +101,10 @@ export const getPlayerDirection = (
   return;
 };
 
-const getDirectionOnMouseMove = (e: CustomMouseEvent, playerPosition: Position) =>
+export const getDirectionOnMouseMove = (e: CustomMouseEvent, playerPosition: Position) =>
   e.evt.offsetX < playerPosition.x ? PlayerDirection.LEFT : PlayerDirection.RIGHT;
-const getDirectionOnArrowMove = (e: KeyboardEvent) => {
+
+export const getDirectionOnArrowMove = (e: KeyboardEvent) => {
   switch (e.key) {
     case 'ArrowLeft':
       return PlayerDirection.LEFT;

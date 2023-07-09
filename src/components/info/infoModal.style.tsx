@@ -14,5 +14,5 @@ export const ModalStyle: CSSProperties = {
 
 export const InfoModalStyles = {
   modal: ModalStyle,
-  h2: { fontFamily: 'Georgia,serif', color: '#ffe794', textShadow: '1px 1px 0 #000;' },
+  h2: { fontFamily: 'Georgia,serif', color: '#ffe794', textShadow: '1px 1px 0 #000' },
 };

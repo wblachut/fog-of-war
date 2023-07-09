@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useImage from 'use-image';
-import { setUpImage } from '~/helpers/imageSettupHelpers';
+import { setUpImage } from '~/helpers/imageSetupHelpers';
 import { ElementSize } from '~/model/customTypes.model';
 
 export const useMapImage = (mapSrc: HTMLImageElement['src']) => {

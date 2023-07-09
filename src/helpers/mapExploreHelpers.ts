@@ -1,27 +1,26 @@
-import { CanvasRef, Position } from '~/model/customTypes.model';
+import { Position } from '~/model/customTypes.model';
 
 const PLAYER_SIGHT_RADIUS = 140;
 const PLAYER_BLUR_RADIUS = 200;
 
 export const clearFogOfWar = (
-  fogLayer: CanvasRef,
+  fogCanvas: HTMLCanvasElement,
   playerPosition: Position,
   radius = PLAYER_SIGHT_RADIUS,
   blurRadius = PLAYER_BLUR_RADIUS,
 ) => {
-  if (!fogLayer) return;
   const { x, y } = playerPosition;
-  const canvas = fogLayer.canvas._canvas;
-  const context = canvas.getContext('2d');
+  const fogContext = fogCanvas.getContext('2d');
+  if (!fogContext) return;
 
-  context.fillStyle = getGradientFillStyle(context, playerPosition, radius, blurRadius);
-  context.globalCompositeOperation = 'destination-out';
-  context.beginPath();
-  context.arc(x, y, blurRadius, 0, Math.PI * 2, false);
-  context.fill();
+  fogContext.fillStyle = getGradientFillStyle(fogContext, playerPosition, radius, blurRadius);
+  fogContext.globalCompositeOperation = 'destination-out';
+  fogContext.beginPath();
+  fogContext.arc(x, y, blurRadius, 0, Math.PI * 2, false);
+  fogContext.fill();
 };
 
-const getRoundedPercentage = (ratio: number) => Math.round(ratio * 100);
+export const getRoundedPercentage = (ratio: number) => Math.round(ratio * 100);
 
 export const calculateFogCoverage = (canvas: HTMLCanvasElement): number => {
   const data = getPixelBuffer(canvas);
@@ -31,7 +30,7 @@ export const calculateFogCoverage = (canvas: HTMLCanvasElement): number => {
   return newPercentageUncovered;
 };
 
-function getGradientFillStyle(
+export function getGradientFillStyle(
   context: CanvasRenderingContext2D,
   playerPosition: Position,
   radius = PLAYER_SIGHT_RADIUS,
@@ -47,8 +46,8 @@ function getGradientFillStyle(
   return gradient;
 }
 
-function getPixelBuffer(canvas: HTMLCanvasElement): Uint8Array {
-  if (canvas.width === 0 || canvas.width === 0) return new Uint8Array(1);
+export function getPixelBuffer(canvas: HTMLCanvasElement): Uint8Array {
+  if (canvas.width === 0 || canvas.height === 0) return new Uint8Array(0);
 
   const context = canvas?.getContext('2d');
   const imageData = context?.getImageData(0, 0, canvas.width, canvas.height);
@@ -57,8 +56,8 @@ function getPixelBuffer(canvas: HTMLCanvasElement): Uint8Array {
   return pixelBuffer;
 }
 
-function getPixelRatio(data: Uint8Array, totalPixels: number): number {
-  if (!data) return 0;
+export function getPixelRatio(data: Uint8Array, totalPixels: number): number {
+  // if (data === new Uint8Array(0)) return 0;
   let coveredPixels = 0;
 
   for (let i = 0; i < data.length; i += 4) {

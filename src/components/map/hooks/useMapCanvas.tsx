@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useImage from 'use-image';
+import fog from '~/assets/fog-homm3.png';
 import { calculateFogCoverage, clearFogOfWar } from '~/helpers/mapExploreHelpers';
 import { CanvasRef, Position, StageRef } from '~/model/customTypes.model';
-import fog from '../../../assets/fog-homm3.png';
 
 const FOG_SRC = fog;
 
@@ -16,7 +16,9 @@ export const useMapCanvas = (playerPosition: Position) => {
   const getFogCoverage = useCallback(() => {
     const fogLayer = fogLayerRef.current;
     if (!fogLayer) return;
-    const newPercentageUncovered = calculateFogCoverage(fogLayer?.canvas._canvas);
+    const fogCanvas = fogLayer.canvas;
+
+    const newPercentageUncovered = calculateFogCoverage(fogCanvas);
     setPercentageUncovered(newPercentageUncovered);
   }, []);
 
@@ -25,7 +27,9 @@ export const useMapCanvas = (playerPosition: Position) => {
     const stage = stageRef.current;
     const fogLayer = fogLayerRef.current;
     if (!stage || !fogLayer) return;
-    clearFogOfWar(fogLayer, playerPosition);
+    const fogCanvas = fogLayer.canvas;
+
+    clearFogOfWar(fogCanvas, playerPosition);
 
     const requestID = requestAnimationFrame(getFogCoverage);
 
