@@ -28,7 +28,11 @@ const InfoModal = () => {
   });
 
   return (
-    <animated.div className='explorer-info' style={{ ...InfoModalStyles.modal, ...animation }}>
+    <animated.div
+      data-testid='info-modal'
+      className='explorer-info'
+      style={{ ...InfoModalStyles.modal, ...animation }}
+    >
       <h2 style={InfoModalStyles.h2}>Welcome to Fog of War Simulator</h2>
       <p>Move the player around the map with arrow keys or mouse move.</p>
       <p>You can track your progress in the bottom right corner.</p>
