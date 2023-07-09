@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import useImage from 'use-image';
-import fog from '~/assets/fog-homm3.png';
 import { calculateFogCoverage, clearFogOfWar } from '~/helpers/mapExploreHelpers';
 import { CanvasRef, Position, StageRef } from '~/model/customTypes.model';
-
-const FOG_SRC = fog;
 
 export const useMapCanvas = (playerPosition: Position) => {
   const stageRef = useRef<StageRef>(null);
   const fogLayerRef = useRef<CanvasRef>(null);
-  const [fogImage] = useImage(FOG_SRC);
   const [percentageUncovered, setPercentageUncovered] = useState(0);
 
   /* PROGRESS TRACKING */
@@ -39,7 +34,6 @@ export const useMapCanvas = (playerPosition: Position) => {
   return {
     stageRef,
     fogLayerRef,
-    fogImage,
     playerPosition,
     percentageUncovered,
   };

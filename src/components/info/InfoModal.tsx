@@ -3,14 +3,20 @@ import { animated, useSpring } from 'react-spring';
 import { InfoModalStyles } from './infoModal.style';
 
 const InfoModal = () => {
-  const [showPopup, setShowPopup] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    const showTimeoutId = setTimeout(() => {
+      setShowPopup(true);
+    }, 1000);
+    const hideTimeoutId = setTimeout(() => {
       setShowPopup(false);
     }, 8000);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(showTimeoutId);
+      clearTimeout(hideTimeoutId);
+    };
   }, []);
 
   const animation = useSpring({
@@ -24,7 +30,7 @@ const InfoModal = () => {
   return (
     <animated.div className='explorer-info' style={{ ...InfoModalStyles.modal, ...animation }}>
       <h2 style={InfoModalStyles.h2}>Welcome to Fog of War Simulator</h2>
-      <p>Move the player around the map with arrow keys or mouse.</p>
+      <p>Move the player around the map with arrow keys or mouse move.</p>
       <p>You can track your progress in the bottom right corner.</p>
     </animated.div>
   );

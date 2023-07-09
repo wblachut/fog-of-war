@@ -15,12 +15,12 @@ import {
 
 const STARTING_POSITION = { x: 560, y: 380 };
 const HIDDEN_POSITION = { x: -100, y: -100 };
-const LEFT_CLICK_BUTTON = 2;
+const RIGHT_CLICK_BUTTON = 2;
 
 export interface MoveHandler {
   playerDirection: PlayerDirection;
   handleMouseMove: (e: CustomMouseEvent) => void;
-  handleMouseDown: () => void;
+  handleMouseDown: (e: CustomMouseEvent) => void;
   handleMouseUp: () => void;
 }
 
@@ -39,7 +39,7 @@ export const usePlayerMovement = (mapSize: ElementSize) => {
       const stage = e.currentTarget.getStage();
       const position = stage?.getPointerPosition();
 
-      if (!isMousePressed && e.evt.button !== LEFT_CLICK_BUTTON) return;
+      if (!isMousePressed) return;
 
       const mousePosition = position as Position;
       handlePlayerDirection(e, playerPosition);
@@ -51,7 +51,9 @@ export const usePlayerMovement = (mapSize: ElementSize) => {
     [isMousePressed, mapSize, playerPosition],
   );
 
-  const handleMouseDown = useCallback(() => {
+  const handleMouseDown = useCallback((e: CustomMouseEvent) => {
+    const leftMouseButtonClick = e.evt.button !== RIGHT_CLICK_BUTTON;
+    if (!leftMouseButtonClick) return;
     setIsMousePressed(true);
   }, []);
 
@@ -61,6 +63,8 @@ export const usePlayerMovement = (mapSize: ElementSize) => {
 
   useEffect(() => {
     const handleArrowMove = (e: KeyboardEvent) => {
+      const arrowKeyEvent = e.key.includes('Arrow');
+      if (!arrowKeyEvent) return;
       e.preventDefault();
       const isRestricted = checkForRestrictedMove(e.key, playerPosition, mapSize);
       if (isRestricted) return;

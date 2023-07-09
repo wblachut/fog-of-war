@@ -1,13 +1,13 @@
-import { CSSProperties } from 'react';
+import { useRef } from 'react';
 import BoarMarker from '~/assets/boar-marker.webp';
-import { CanvasRef, ElementSize, StageRef } from '~/model/customTypes.model';
+import { CanvasRef, StageRef } from '~/model/customTypes.model';
 import { PlayerMarker } from '~/player/PlayerMarker';
 import { PlayerWrapper } from '~/player/PlayerWrapper';
 import { ProgressTracker } from '../ProgressTracker/ProgressTracker';
 import { useMapCanvas } from '../hooks/useMapCanvas';
 import { useMapImage } from '../hooks/useMapImage';
 import { usePlayerMovement } from '../hooks/usePlayerMovement';
-import { ExplorerBorderStyle } from './ExplorerBorder.style';
+import { ExplorerBorder } from './ExplorerBorder/ExplorerBorder';
 import { FogOfWarStage } from './FogOfWarStage/FogOfWarStage';
 
 export interface ExplorerMapProps {
@@ -15,9 +15,11 @@ export interface ExplorerMapProps {
 }
 
 export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
-  const { mapSize, mapImage } = useMapImage(mapSrc);
+  const document = useRef(window.document.documentElement);
+  const { clientWidth, clientHeight } = document.current;
+  const { mapSize, fogImage, mapImage } = useMapImage(mapSrc);
   const { moveHandler, playerPosition } = usePlayerMovement(mapSize);
-  const { stageRef, fogImage, fogLayerRef, percentageUncovered } = useMapCanvas(playerPosition);
+  const { stageRef, fogLayerRef, percentageUncovered } = useMapCanvas(playerPosition);
 
   if (!mapImage || !fogImage) return null;
 
@@ -36,20 +38,7 @@ export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
         playerDirection={moveHandler.playerDirection}
       />
       <ProgressTracker progressPercentage={percentageUncovered} />
-      <ExplorerBorder
-        width={document.documentElement.clientWidth}
-        height={document.documentElement.clientHeight}
-      />
+      <ExplorerBorder width={clientWidth} height={clientHeight} />
     </>
   );
 };
-
-export const ExplorerBorder = ({ width, height }: ElementSize) => (
-  <div style={getMapBorderStyles(width, height)} />
-);
-
-export const getMapBorderStyles = (width: number, height: number): CSSProperties => ({
-  width: width - 40,
-  height: height - 40,
-  ...ExplorerBorderStyle,
-});
