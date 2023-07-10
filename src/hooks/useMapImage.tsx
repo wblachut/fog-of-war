@@ -6,7 +6,7 @@ import { ElementSize } from '~/model/customTypes.model';
 
 const FOG_SRC = fog;
 
-export const useMapImage = (mapSrc: HTMLImageElement['src']) => {
+export const useAssetSetup = (mapSrc: HTMLImageElement['src']) => {
   const document = useRef(window.document.documentElement);
   const { clientWidth, clientHeight } = document.current;
   const clientSize = { width: clientWidth, height: clientHeight };
@@ -32,5 +32,5 @@ export const useMapImage = (mapSrc: HTMLImageElement['src']) => {
     };
   }, [mapSrc]);
 
-  return { mapImage, fogImage, mapSize, isMounted, clientSize };
+  return { mapImage, fogImage, mapSize, isMounted, clientSize, document };
 };

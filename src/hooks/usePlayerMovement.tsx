@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   checkForRestrictedMove,
-  getNormalizedDirections,
+  getNormalizedPosition,
   getPlayerCoordsOnKeydown,
   getPlayerDirection,
+  scrollPlayerViewOnArrowDown,
+  scrollPlayerViewOnMouseMove,
 } from '~/helpers/PlayerMovementHelpers';
 import { PlayerDirection } from '~/model/PlayerDirectionEnum';
 import {
@@ -15,9 +17,10 @@ import {
 
 const STARTING_POSITION = { x: 560, y: 380 };
 const HIDDEN_POSITION = { x: -100, y: -100 };
-const RIGHT_CLICK_BUTTON = 2;
+const LEFT_CLICK_BUTTON = 0;
 
 export interface MoveHandler {
+  playerPosition: Position;
   playerDirection: PlayerDirection;
   handleMouseMove: (e: CustomMouseEvent) => void;
   handleMouseDown: (e: CustomMouseEvent) => void;
@@ -34,6 +37,10 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
     setPlayerDirection((prevDirection) => newDirection ?? prevDirection);
   };
 
+  const handleScrollPlayerView = useCallback((prevPosition: Position, position: Position) => {
+    scrollPlayerViewOnMouseMove(prevPosition, position);
+  }, []);
+
   const handleMouseMove = useCallback(
     (e: CustomMouseEvent) => {
       const stage = e.currentTarget.getStage();
@@ -43,17 +50,18 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
 
       const mousePosition = position as Position;
       handlePlayerDirection(e, playerPosition);
+      setPlayerPosition((prevPosition) => {
+        handleScrollPlayerView(prevPosition, mousePosition);
 
-      setPlayerPosition((prevPosition) =>
-        getNormalizedDirections(prevPosition, mousePosition, mapSize),
-      );
+        return getNormalizedPosition(prevPosition, mousePosition, mapSize);
+      });
     },
-    [isMousePressed, mapSize, playerPosition, isMounted],
+    [isMousePressed, mapSize, playerPosition, isMounted, handleScrollPlayerView],
   );
 
   const handleMouseDown = useCallback(
     (e: CustomMouseEvent) => {
-      const leftMouseButtonClick = e.evt.button !== RIGHT_CLICK_BUTTON;
+      const leftMouseButtonClick = e.evt.button === LEFT_CLICK_BUTTON;
       if (!leftMouseButtonClick || !isMounted) return;
       setIsMousePressed(true);
     },
@@ -73,6 +81,7 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
       if (isRestricted) return;
       const newCoordinates = getPlayerCoordsOnKeydown(e.key, playerPosition);
       setPlayerPosition(newCoordinates);
+      scrollPlayerViewOnArrowDown(e.key, playerPosition, mapSize);
       handlePlayerDirection(e, playerPosition);
     },
     [playerPosition, mapSize],
@@ -101,6 +110,7 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
   }, [MoveToBeginnerLocation, isMounted]);
 
   const moveHandler = {
+    playerPosition,
     playerDirection,
     handleMouseMove,
     handleMouseDown,

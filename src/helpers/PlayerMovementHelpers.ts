@@ -6,34 +6,47 @@ import {
   Position,
 } from '~/model/customTypes.model';
 
-const RESTRICTED_RADIUS = 50;
-const MINIMAL_DISTANCE = 50;
-const MAGNITUDE = 20;
+const RESTRICTED_DISTANCE = 50;
+const MINIMAL_DISTANCE = 60;
+const MOVE_MAGNITUDE = 20;
+const SCROLL_MAGNITUDE = 2;
 
-export function getMapRestrictions(canvasSize: ElementSize, radius = RESTRICTED_RADIUS) {
-  const leftRestrict = radius;
-  const topRestrict = radius;
-  const rightRestrict = canvasSize.width - radius;
-  const bottomRestrict = canvasSize.height - radius;
+export function getMapRestrictions(
+  canvasSize: ElementSize,
+  distanceX = RESTRICTED_DISTANCE,
+  distanceY = RESTRICTED_DISTANCE,
+) {
+  const leftRestrict = distanceX;
+  const topRestrict = distanceY;
+  const rightRestrict = canvasSize.width - distanceX;
+  const bottomRestrict = canvasSize.height - distanceY;
 
   return { leftRestrict, topRestrict, rightRestrict, bottomRestrict };
 }
 
-export const getNormalizedDirections = (
-  prevPosition: Position,
-  position: Position,
-  mapSize: ElementSize,
-): Position => {
-  const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
+export const getNormalizedDistances = (prevPosition: Position, position: Position) => {
   const { x: prevX, y: prevY } = prevPosition;
   const { x: newX, y: newY } = position;
   const dX = newX - prevX;
   const dY = newY - prevY;
   const dist = Math.sqrt(dX * dX + dY * dY);
-  if (dist < MINIMAL_DISTANCE) return prevPosition;
-  const normalizedDX = (dX / dist) * MAGNITUDE;
-  const normalizedDY = (dY / dist) * MAGNITUDE;
 
+  const normalizedDX = (dX / dist) * MOVE_MAGNITUDE;
+  const normalizedDY = (dY / dist) * MOVE_MAGNITUDE;
+
+  return { normalizedDX, normalizedDY, dist };
+};
+
+export const getNormalizedPosition = (
+  prevPosition: Position,
+  position: Position,
+  mapSize: ElementSize,
+) => {
+  const { x: prevX, y: prevY } = prevPosition;
+  const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
+  const { normalizedDX, normalizedDY, dist } = getNormalizedDistances(prevPosition, position);
+
+  if (dist < MINIMAL_DISTANCE) return prevPosition;
   const isOnBoarderX =
     leftRestrict >= prevX + normalizedDX || prevX + normalizedDX >= rightRestrict;
 
@@ -112,6 +125,55 @@ export const getDirectionOnArrowMove = (e: KeyboardEvent) => {
       return PlayerDirection.RIGHT;
     case 'ArrowUp':
     case 'ArrowDown':
+    default:
+      return;
+  }
+};
+
+export const scrollPlayerView = (x: number, y: number) => {
+  const currentScrollX = window.scrollX || document.documentElement.scrollLeft;
+  const currentScrollY = window.screenY || document.documentElement.scrollTop;
+
+  window.scrollTo(currentScrollX + x, currentScrollY + y);
+};
+
+export const scrollPlayerViewOnMouseMove = (
+  prevPosition: Position,
+  mousePosition: Position,
+): void => {
+  const { normalizedDX, normalizedDY } = getNormalizedDistances(prevPosition, mousePosition);
+  scrollPlayerView(normalizedDX / SCROLL_MAGNITUDE, normalizedDY / SCROLL_MAGNITUDE);
+};
+
+export const scrollPlayerViewOnArrowDown = (
+  key: KeyboardEvent['key'],
+  playerPosition: Position,
+  mapSize: ElementSize,
+): void => {
+  const { clientWidth, clientHeight } = document.documentElement;
+  const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(
+    mapSize,
+    clientWidth / 2,
+    clientHeight / 2,
+  );
+  const leftStop = leftRestrict >= playerPosition.x;
+  const rightStop = rightRestrict <= playerPosition.x;
+  const upStop = topRestrict >= playerPosition.y;
+  const downStop = bottomRestrict <= playerPosition.y;
+
+  switch (key) {
+    case 'ArrowLeft':
+      if (rightStop) return;
+      return scrollPlayerView(-10, 0);
+    case 'ArrowRight':
+      if (leftStop) return;
+      return scrollPlayerView(10, 0);
+    case 'ArrowUp':
+      if (downStop) return;
+      return scrollPlayerView(0, -10);
+    case 'ArrowDown':
+      if (upStop) return;
+      return scrollPlayerView(0, 10);
     default:
       return;
   }

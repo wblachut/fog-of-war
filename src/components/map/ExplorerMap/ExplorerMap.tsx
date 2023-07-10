@@ -1,10 +1,10 @@
 import BoarMarker from '~/assets/boar-marker.webp';
 import { PlayerMarker } from '~/components/player/PlayerMarker';
 import { PlayerWrapper } from '~/components/player/PlayerWrapper';
+import { usePlayerMovement } from '~/hooks/usePlayerMovement';
 import { CanvasRef, StageRef } from '~/model/customTypes.model';
 import { useMapCanvas } from '../../../hooks/useMapCanvas';
-import { useMapImage } from '../../../hooks/useMapImage';
-import { usePlayerMovement } from '../../../hooks/usePlayerMovement';
+import { useAssetSetup } from '../../../hooks/useMapImage';
 import { ProgressTracker } from '../ProgressTracker/ProgressTracker';
 import { ExplorerBorder } from './ExplorerBorder/ExplorerBorder';
 import { FogOfWarStage } from './FogOfWarStage/FogOfWarStage';
@@ -14,9 +14,9 @@ export interface ExplorerMapProps {
 }
 
 export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
-  const { mapSize, fogImage, mapImage, isMounted, clientSize } = useMapImage(mapSrc);
-  const { moveHandler, playerPosition } = usePlayerMovement(mapSize, isMounted);
-  const { stageRef, fogLayerRef, percentageUncovered } = useMapCanvas(playerPosition);
+  const { mapSize, fogImage, mapImage, isMounted, clientSize, document } = useAssetSetup(mapSrc);
+  const { moveHandler } = usePlayerMovement(mapSize, document, isMounted);
+  const { stageRef, fogLayerRef, percentageUncovered } = useMapCanvas(moveHandler);
 
   if (!mapImage || !fogImage) return null;
 
@@ -31,7 +31,7 @@ export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
       />
       <PlayerWrapper
         playerMarker={<PlayerMarker playerImageSrc={BoarMarker} />}
-        playerPosition={playerPosition}
+        playerPosition={moveHandler.playerPosition}
         playerDirection={moveHandler.playerDirection}
       />
       <ProgressTracker progressPercentage={percentageUncovered} />
