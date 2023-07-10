@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import BoarMarker from '~/assets/boar-marker.webp';
 import { PlayerMarker } from '~/components/player/PlayerMarker';
 import { PlayerWrapper } from '~/components/player/PlayerWrapper';
@@ -15,10 +14,8 @@ export interface ExplorerMapProps {
 }
 
 export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
-  const document = useRef(window.document.documentElement);
-  const { clientWidth, clientHeight } = document.current;
-  const { mapSize, fogImage, mapImage } = useMapImage(mapSrc);
-  const { moveHandler, playerPosition } = usePlayerMovement(mapSize);
+  const { mapSize, fogImage, mapImage, isMounted, clientSize } = useMapImage(mapSrc);
+  const { moveHandler, playerPosition } = usePlayerMovement(mapSize, isMounted);
   const { stageRef, fogLayerRef, percentageUncovered } = useMapCanvas(playerPosition);
 
   if (!mapImage || !fogImage) return null;
@@ -38,7 +35,7 @@ export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
         playerDirection={moveHandler.playerDirection}
       />
       <ProgressTracker progressPercentage={percentageUncovered} />
-      <ExplorerBorder width={clientWidth} height={clientHeight} />
+      <ExplorerBorder width={clientSize.width} height={clientSize.height} />
     </>
   );
 };
