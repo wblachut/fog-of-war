@@ -1,0 +1,52 @@
+:root {
+  --scrollbar-border-color: #140101;
+  --scrollbar-track-color: #290404;
+  --scrollbar-thumb-color: #6b1010;
+  --scrollbar-hover-color: #7a1212;
+  --scrollbar-active-color: #8c1414;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+  border: 0.5px solid var(--scrollbar-border-color);
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+  background-color: #f5f5f5;
+  cursor: url('https://cf-media.herowo.game/custom-graphics/DEF-CUR/CRDEFLT/CursrD00.cur'), auto;
+}
+
+body::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: var(--scrollbar-thumb-color);
+  background-image: -webkit-linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.4) 50%,
+    transparent,
+    transparent
+  );
+}
+
+body::-webkit-scrollbar-thumb:vertical {
+  background-image: -webkit-linear-gradient(
+    0deg,
+    transparent,
+    rgba(0, 0, 0, 0.4) 50%,
+    transparent,
+    transparent
+  );
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-hover-color);
+}
+
+body::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-active-color);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: var(--scrollbar-border-color);
+}

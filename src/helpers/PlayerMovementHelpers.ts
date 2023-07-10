@@ -1,12 +1,28 @@
-import { mapSize, Position } from '~/model/types';
+import { PlayerDirection } from '~/model/PlayerDirectionEnum';
+import {
+  CustomMouseEvent,
+  ElementSize,
+  PlayerMoveEvent,
+  Position,
+} from '~/model/customTypes.model';
 
-const RESTRICTED_RADIUS = 25;
-const MAGNITUDE = 10;
+const RESTRICTED_RADIUS = 50;
+const MINIMAL_DISTANCE = 50;
+const MAGNITUDE = 20;
+
+export function getMapRestrictions(canvasSize: ElementSize, radius = RESTRICTED_RADIUS) {
+  const leftRestrict = radius;
+  const topRestrict = radius;
+  const rightRestrict = canvasSize.width - radius;
+  const bottomRestrict = canvasSize.height - radius;
+
+  return { leftRestrict, topRestrict, rightRestrict, bottomRestrict };
+}
 
 export const getNormalizedDirections = (
   prevPosition: Position,
   position: Position,
-  mapSize: mapSize,
+  mapSize: ElementSize,
 ): Position => {
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
   const { x: prevX, y: prevY } = prevPosition;
@@ -14,6 +30,7 @@ export const getNormalizedDirections = (
   const dX = newX - prevX;
   const dY = newY - prevY;
   const dist = Math.sqrt(dX * dX + dY * dY);
+  if (dist < MINIMAL_DISTANCE) return prevPosition;
   const normalizedDX = (dX / dist) * MAGNITUDE;
   const normalizedDY = (dY / dist) * MAGNITUDE;
 
@@ -29,7 +46,7 @@ export const getNormalizedDirections = (
   };
 };
 
-export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position) => {
+export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position): Position => {
   switch (key) {
     case 'ArrowLeft':
       return {
@@ -56,7 +73,11 @@ export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position) =>
   }
 };
 
-export const checkForRestrictedMove = (key: string, prevPosition: Position, mapSize: mapSize) => {
+export const checkForRestrictedMove = (
+  key: string,
+  prevPosition: Position,
+  mapSize: ElementSize,
+): boolean => {
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
 
   const restrictedLeft = key === 'ArrowLeft' && prevPosition.x <= leftRestrict;
@@ -69,11 +90,29 @@ export const checkForRestrictedMove = (key: string, prevPosition: Position, mapS
   return isRestricted;
 };
 
-function getMapRestrictions(canvasSize: mapSize, radius = RESTRICTED_RADIUS) {
-  const leftRestrict = radius;
-  const topRestrict = radius;
-  const rightRestrict = canvasSize.width - radius;
-  const bottomRestrict = canvasSize.height - radius;
+export const getPlayerDirection = (
+  e: Partial<PlayerMoveEvent>,
+  playerPosition: Position,
+): PlayerDirection | undefined => {
+  const isMouseEvent = e.type === 'mousemove';
+  const isArrowEvent = e.type === 'keydown';
+  if (isMouseEvent) return getDirectionOnMouseMove(e as CustomMouseEvent, playerPosition);
+  if (isArrowEvent) return getDirectionOnArrowMove(e as KeyboardEvent);
+  return;
+};
 
-  return { leftRestrict, topRestrict, rightRestrict, bottomRestrict };
-}
+export const getDirectionOnMouseMove = (e: CustomMouseEvent, playerPosition: Position) =>
+  e.evt.offsetX < playerPosition.x ? PlayerDirection.LEFT : PlayerDirection.RIGHT;
+
+export const getDirectionOnArrowMove = (e: KeyboardEvent) => {
+  switch (e.key) {
+    case 'ArrowLeft':
+      return PlayerDirection.LEFT;
+    case 'ArrowRight':
+      return PlayerDirection.RIGHT;
+    case 'ArrowUp':
+    case 'ArrowDown':
+    default:
+      return;
+  }
+};
