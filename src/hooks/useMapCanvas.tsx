@@ -11,6 +11,7 @@ export const useMapCanvas = (playerPosition: Position) => {
   const getFogCoverage = useCallback(() => {
     const fogLayer = fogLayerRef.current;
     if (!fogLayer) return;
+    // @ts-expect-error conversion from MutableRefObject to HTMLCanvasElement
     const fogCanvas = fogLayer.canvas;
 
     const newPercentageUncovered = calculateFogCoverage(fogCanvas);
@@ -22,6 +23,7 @@ export const useMapCanvas = (playerPosition: Position) => {
     const stage = stageRef.current;
     const fogLayer = fogLayerRef.current;
     if (!stage || !fogLayer) return;
+    // @ts-expect-error conversion from MutableRefObject to HTMLCanvasElement
     const fogCanvas = fogLayer.canvas;
 
     clearFogOfWar(fogCanvas, playerPosition);

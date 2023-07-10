@@ -57,7 +57,6 @@ export function getPixelBuffer(canvas: HTMLCanvasElement): Uint8Array {
 }
 
 export function getPixelRatio(data: Uint8Array, totalPixels: number): number {
-  // if (data === new Uint8Array(0)) return 0;
   let coveredPixels = 0;
 
   for (let i = 0; i < data.length; i += 4) {

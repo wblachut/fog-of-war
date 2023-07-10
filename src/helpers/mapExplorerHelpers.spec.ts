@@ -1,52 +1,7 @@
-// import { JSDOM } from 'jsdom';
 import { vi } from 'vitest';
-import { Position } from '~/model/customTypes.model';
 import { getPixelBuffer, getPixelRatio, getRoundedPercentage } from './mapExploreHelpers';
 
-// function createMockCanvas() {
-//   const { document } = new JSDOM('<html><canvas id="canvas"></canvas></html>').window;
-//   global.document = document;
-
-//   const mockCanvas = document.getElementById('canvas') as HTMLCanvasElement;
-//   mockCanvas.width = mockCanvas.height = 800;
-
-//   const mockCtx = mockCanvas.getContext('2d') as CanvasRenderingContext2D;
-
-//   return {
-//     mockCanvas,
-//     mockCtx,
-//   };
-// }
-
-// const { document } = new JSDOM('<html></html>').window;
-// global.document = document;
-
-const mockContextFunction = {
-  fillStyle: vi.fn(),
-  globalCompositeOperation: vi.fn(),
-  beginPath: vi.fn(),
-  arc: vi.fn(),
-  fill: vi.fn(),
-};
-
-const originalGetContext = HTMLCanvasElement.prototype.getContext;
-const mockCtx = vi
-  .spyOn(HTMLCanvasElement.prototype, 'getContext')
-  .mockImplementation(function (contextId: string, options?: any): RenderingContext | null {
-    return {
-      fillStyle: vi.fn(),
-      globalCompositeOperation: vi.fn(),
-      beginPath: vi.fn(),
-      arc: vi.fn(),
-      fill: vi.fn(),
-    } as unknown as CanvasRenderingContext2D;
-  });
-
 describe('test MapExplorerHelpers', () => {
-  const mockPlayerPosition: Position = { x: 100, y: 100 };
-  const mockCanvas = document.createElement('canvas') as HTMLCanvasElement;
-  const mockContext = mockContextFunction;
-
   describe('getRoundedPercentage', () => {
     it('should return the rounded percentage based on the provided ratio', () => {
       const ratio = 0.768;
@@ -62,7 +17,10 @@ describe('test MapExplorerHelpers', () => {
       const canvasMock = document.createElement('canvas');
       vi.spyOn(canvasMock, 'getContext').mockReturnValue({
         getImageData: () => ({
-          data: new Uint8Array([255, 255, 255, 0, 255, 255, 255, 255, 0, 0, 0, 0]), // Mock pixel data
+          // @ts-expect-error only returns needed mock value
+          data: new Uint8ClampedArray([
+            255, 255, 255, 0, 255, 255, 255, 255, 0, 0, 0, 0,
+          ]) as Partial<ImageData>,
         }),
       });
 

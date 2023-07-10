@@ -1,12 +1,12 @@
 import { useRef } from 'react';
 import BoarMarker from '~/assets/boar-marker.webp';
+import { PlayerMarker } from '~/components/player/PlayerMarker';
+import { PlayerWrapper } from '~/components/player/PlayerWrapper';
 import { CanvasRef, StageRef } from '~/model/customTypes.model';
-import { PlayerMarker } from '~/player/PlayerMarker';
-import { PlayerWrapper } from '~/player/PlayerWrapper';
+import { useMapCanvas } from '../../../hooks/useMapCanvas';
+import { useMapImage } from '../../../hooks/useMapImage';
+import { usePlayerMovement } from '../../../hooks/usePlayerMovement';
 import { ProgressTracker } from '../ProgressTracker/ProgressTracker';
-import { useMapCanvas } from '../hooks/useMapCanvas';
-import { useMapImage } from '../hooks/useMapImage';
-import { usePlayerMovement } from '../hooks/usePlayerMovement';
 import { ExplorerBorder } from './ExplorerBorder/ExplorerBorder';
 import { FogOfWarStage } from './FogOfWarStage/FogOfWarStage';
 

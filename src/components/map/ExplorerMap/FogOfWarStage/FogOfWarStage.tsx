@@ -1,6 +1,6 @@
 import { Layer, Rect, Stage } from 'react-konva';
 import { CanvasRef, LayerRef, StageRef } from '~/model/customTypes.model';
-import { MoveHandler } from '../../hooks/usePlayerMovement';
+import { MoveHandler } from '../../../../hooks/usePlayerMovement';
 
 interface FogOfWarStageProps {
   stageRef: StageRef;
