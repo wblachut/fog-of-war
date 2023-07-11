@@ -14,8 +14,8 @@ export interface ExplorerMapProps {
 }
 
 export const ExplorerMap = ({ mapSrc }: ExplorerMapProps) => {
-  const { mapSize, fogImage, mapImage, isMounted, clientSize, document } = useAssetSetup(mapSrc);
-  const { moveHandler } = usePlayerMovement(mapSize, document, isMounted);
+  const { mapSize, fogImage, mapImage, isMounted, clientSize } = useAssetSetup(mapSrc);
+  const { moveHandler } = usePlayerMovement(mapSize, isMounted);
   const { stageRef, fogLayerRef, percentageUncovered } = useMapCanvas(moveHandler);
 
   if (!mapImage || !fogImage) return null;

@@ -32,5 +32,5 @@ export const useAssetSetup = (mapSrc: HTMLImageElement['src']) => {
     };
   }, [mapSrc]);
 
-  return { mapImage, fogImage, mapSize, isMounted, clientSize, document };
+  return { mapImage, fogImage, mapSize, isMounted, clientSize };
 };
