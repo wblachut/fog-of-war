@@ -1,6 +1,7 @@
 import {
   getMapRestrictions,
-  getNormalizedDirections,
+  getNormalizedDistances,
+  getNormalizedPosition,
   getPlayerCoordsOnKeydown,
   getPlayerDirection,
 } from '~/helpers/PlayerMovementHelpers';
@@ -10,54 +11,69 @@ import { PlayerDirection } from '~/model/PlayerDirectionEnum';
 
 describe('test PlayerMovementHelpers', () => {
   const mockCanvasSize = { width: 800, height: 600 };
-  const mockRadius = 10;
+  const mockDist = 10;
   const prevPosition = { x: 100, y: 100 };
 
   describe('getMapRestrictions', () => {
     it('should return the map restrictions based on the canvas size and radius', () => {
       const expectedRestrictions = {
-        leftRestrict: mockRadius,
-        topRestrict: mockRadius,
-        rightRestrict: mockCanvasSize.width - mockRadius,
-        bottomRestrict: mockCanvasSize.height - mockRadius,
+        leftRestrict: mockDist,
+        topRestrict: mockDist,
+        rightRestrict: mockCanvasSize.width - mockDist,
+        bottomRestrict: mockCanvasSize.height - mockDist,
       };
 
-      const restrictions = getMapRestrictions(mockCanvasSize, mockRadius);
+      const restrictions = getMapRestrictions(mockCanvasSize, mockDist, mockDist);
 
       expect(restrictions).toEqual(expectedRestrictions);
     });
   });
 
   describe('getNormalizedDirections', () => {
-    it('should return the normalized directions based on the previous position and current position', () => {
+    it('should return the normalized distances based on the previous position and current position', () => {
       const cursorPosition = { x: 200, y: 200 };
-      const expectedPlayerPosition = { x: 114.14213562373095, y: 114.14213562373095 };
-      const normalizedDirections = getNormalizedDirections(
+      const expectedDistances = {
+        dist: 141.4213562373095,
+        normalizedDX: 14.14213562373095,
+        normalizedDY: 14.14213562373095,
+      };
+      const normalizedDirections = getNormalizedDistances(prevPosition, cursorPosition);
+
+      expect(normalizedDirections).toEqual(expectedDistances);
+    });
+  });
+
+  describe('getNormalizedPosition', () => {
+    it('should return the normalized position based on the previous position, current position and canvas size', () => {
+      const cursorPosition = { x: 200, y: 200 };
+      const expectedPosition = {
+        x: 114.14213562373095,
+        y: 114.14213562373095,
+      };
+      const normalizedPosition = getNormalizedPosition(
         prevPosition,
         cursorPosition,
         mockCanvasSize,
       );
-
-      expect(normalizedDirections).toEqual(expectedPlayerPosition);
+      expect(normalizedPosition).toEqual(expectedPosition);
     });
 
     it('should return the previous position when the mouse position is in the left restrict area', () => {
       const restrictedPosition = { x: 5, y: 200 };
       const prevPosition = { x: 10, y: 200 };
-      const normalizedDirections = getNormalizedDirections(
+      const normalizedPosition = getNormalizedPosition(
         prevPosition,
         restrictedPosition,
         mockCanvasSize,
       );
 
-      expect(normalizedDirections).toEqual(prevPosition);
+      expect(normalizedPosition).toEqual(prevPosition);
     });
 
     it('should return the previous position when the mouse position is in the top restrict area', () => {
       const restrictedPosition = { x: 200, y: 5 };
       const prevPosition = { x: 200, y: 10 };
-
-      const normalizedDirections = getNormalizedDirections(
+      const normalizedDirections = getNormalizedPosition(
         prevPosition,
         restrictedPosition,
         mockCanvasSize,

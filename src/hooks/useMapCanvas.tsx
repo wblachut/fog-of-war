@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { calculateFogCoverage, clearFogOfWar } from '~/helpers/mapExploreHelpers';
-import { CanvasRef, Position, StageRef } from '~/model/customTypes.model';
+import { CanvasRef, StageRef } from '~/model/customTypes.model';
+import { MoveHandler } from './usePlayerMovement';
 
-export const useMapCanvas = (playerPosition: Position) => {
+export const useMapCanvas = (moveHandler: MoveHandler) => {
   const stageRef = useRef<StageRef>(null);
   const fogLayerRef = useRef<CanvasRef>(null);
   const [percentageUncovered, setPercentageUncovered] = useState(0);
@@ -26,17 +27,17 @@ export const useMapCanvas = (playerPosition: Position) => {
     // @ts-expect-error conversion from MutableRefObject to HTMLCanvasElement
     const fogCanvas = fogLayer.canvas;
 
-    clearFogOfWar(fogCanvas, playerPosition);
+    clearFogOfWar(fogCanvas, moveHandler.playerPosition);
 
     const requestID = requestAnimationFrame(getFogCoverage);
 
     return () => cancelAnimationFrame(requestID);
-  }, [getFogCoverage, playerPosition]);
+  }, [getFogCoverage, moveHandler.playerPosition]);
 
   return {
     stageRef,
     fogLayerRef,
-    playerPosition,
     percentageUncovered,
+    moveHandler,
   };
 };
