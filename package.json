@@ -1,8 +1,11 @@
 {
-  "name": "vite-react-ts-eslint-prettier",
-  "private": true,
-  "version": "0.0.0",
+  "name": "fog-of-war-vite-app",
+  "homepage": "https://wblachut.github.io/fog-of-war",
+  "private": false,
+  "version": "1.0.0",
   "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -17,6 +20,7 @@
   "dependencies": {
     "@types/react-test-renderer": "^18.0.0",
     "@vitest/ui": "^0.33.0",
+    "gh-pages": "^5.0.0",
     "konva": "^9.2.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
