@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/fog-of-war',
+  base: '/fog-of-war/',
   plugins: [react(), tsconfigPaths()],
   test: {
     environment: 'jsdom',
