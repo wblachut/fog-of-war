@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  checkForRestrictedMove,
+  checkForRestrictedArrowMove,
   getNormalizedPosition,
   getPlayerCoordsOnKeydown,
   getPlayerDirection,
@@ -16,9 +16,9 @@ import {
 } from '~/model/customTypes.model';
 
 /* SET CUSTOM VARIABLES  */
-const STARTING_POSITION = { x: 560, y: 380 }; // Bastion castle position
-const HIDDEN_POSITION = { x: -100, y: -100 }; // position outside the map
-const LEFT_CLICK_MOUSE_BUTTON = 0; // left mouse button key number
+const STARTING_POSITION = { x: 560, y: 380 };
+const HIDDEN_POSITION = { x: -100, y: -100 };
+const LEFT_CLICK_MOUSE_BUTTON = 0;
 
 export interface MoveHandler {
   playerPosition: Position;
@@ -87,7 +87,7 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
       const arrowKeyEvent = e.key.includes('Arrow');
       if (!arrowKeyEvent) return; // we want other keys to behave as usual
       e.preventDefault();
-      const isRestricted = checkForRestrictedMove(e.key, playerPosition, mapSize);
+      const isRestricted = checkForRestrictedArrowMove(e.key, playerPosition, mapSize);
       if (isRestricted) return; // disallow player to leave the map
       const newCoordinates = getPlayerCoordsOnKeydown(e.key, playerPosition);
       setPlayerPosition(newCoordinates);

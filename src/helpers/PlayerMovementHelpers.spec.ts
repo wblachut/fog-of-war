@@ -34,8 +34,8 @@ describe('test PlayerMovementHelpers', () => {
       const cursorPosition = { x: 200, y: 200 };
       const expectedDistances = {
         dist: 141.4213562373095,
-        normalizedDX: 14.14213562373095,
-        normalizedDY: 14.14213562373095,
+        normalizedDX: 7.071067811865475,
+        normalizedDY: 7.071067811865475,
       };
       const normalizedDirections = getNormalizedDistances(prevPosition, cursorPosition);
 
@@ -47,8 +47,8 @@ describe('test PlayerMovementHelpers', () => {
     it('should return the normalized position based on the previous position, current position and canvas size', () => {
       const cursorPosition = { x: 200, y: 200 };
       const expectedPosition = {
-        x: 114.14213562373095,
-        y: 114.14213562373095,
+        x: 107.07106781186548,
+        y: 107.07106781186548,
       };
       const normalizedPosition = getNormalizedPosition(
         prevPosition,

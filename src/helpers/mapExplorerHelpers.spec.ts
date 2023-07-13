@@ -1,12 +1,12 @@
 import { vi } from 'vitest';
-import { getPixelBuffer, getPixelRatio, getRoundedPercentage } from './mapExploreHelpers';
+import { mapExplorerHelpers } from './mapExploreHelpers';
 
 describe('test MapExplorerHelpers', () => {
   describe('getRoundedPercentage', () => {
     it('should return the rounded percentage based on the provided ratio', () => {
       const ratio = 0.768;
       const expectedPercentage = 77;
-      const percentage = getRoundedPercentage(ratio);
+      const percentage = mapExplorerHelpers.getRoundedPercentage(ratio);
 
       expect(percentage).toBe(expectedPercentage);
     });
@@ -24,7 +24,7 @@ describe('test MapExplorerHelpers', () => {
         }),
       });
 
-      const pixelBuffer = getPixelBuffer(canvasMock);
+      const pixelBuffer = mapExplorerHelpers.getPixelBuffer(canvasMock);
 
       expect(pixelBuffer).toEqual(
         new Uint8Array([255, 255, 255, 0, 255, 255, 255, 255, 0, 0, 0, 0]),
@@ -35,7 +35,7 @@ describe('test MapExplorerHelpers', () => {
       const canvasMock = document.createElement('canvas');
       canvasMock.width = canvasMock.height = 0;
       vi.spyOn(canvasMock, 'getContext').mockReturnValue(null);
-      const pixelBuffer = getPixelBuffer(canvasMock);
+      const pixelBuffer = mapExplorerHelpers.getPixelBuffer(canvasMock);
 
       expect(pixelBuffer).toEqual(new Uint8Array(0));
     });
@@ -47,13 +47,13 @@ describe('test MapExplorerHelpers', () => {
     const totalPixels = 100;
 
     it('should return the pixel ratio based on the pixel data and total pixels', () => {
-      const pixelRatio = getPixelRatio(data, totalPixels);
+      const pixelRatio = mapExplorerHelpers.getPixelRatio(data, totalPixels);
 
       expect(pixelRatio).toBe(0.99);
     });
 
     it('should return 0 if the data is not provided', () => {
-      const pixelRatio = getPixelRatio(emptyData, totalPixels);
+      const pixelRatio = mapExplorerHelpers.getPixelRatio(emptyData, totalPixels);
 
       expect(pixelRatio).toEqual(1);
     });
