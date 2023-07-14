@@ -10,7 +10,7 @@ import {
 const RESTRICTED_DISTANCE = 50;
 const MINIMAL_DISTANCE = 60;
 const MOVE_MAGNITUDE = 10;
-const SCROLL_MAGNITUDE = 2;
+const SCROLL_MAGNITUDE = 3;
 
 /* CALCULATE MAP'S RESTRICTED ZONES  */
 export function getMapRestrictions(
@@ -145,8 +145,7 @@ export const getDirectionOnArrowMove = (e: KeyboardEvent) => {
 
 /* SCROLL VIEW BY X & Y */
 export const scrollPlayerView = (x: number, y: number) => {
-  const currentScrollX = document.documentElement.scrollLeft;
-  const currentScrollY = document.documentElement.scrollTop;
+  const { scrollLeft: currentScrollX, scrollTop: currentScrollY } = document.documentElement;
 
   window.scrollTo(currentScrollX + x, currentScrollY + y);
 };
