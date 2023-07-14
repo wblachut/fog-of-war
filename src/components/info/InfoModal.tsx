@@ -23,7 +23,7 @@ const InfoModal = () => {
     from: { opacity: 0, transform: 'translateY(-200%)' },
     to: {
       opacity: showPopup ? 1 : 0,
-      transform: showPopup ? 'translateY(0)' : 'translateY(-100%)',
+      transform: showPopup ? 'translateY(0)' : 'translateY(-200%)',
     },
   });
 

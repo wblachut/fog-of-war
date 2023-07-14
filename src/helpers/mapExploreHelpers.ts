@@ -72,6 +72,7 @@ export const mapExplorerHelpers = {
   getPixelRatio(data: Uint8Array, totalPixels: number): number {
     let coveredPixels = 0;
 
+    // check if pixel's alpha value is 0 (r, g, b, a - "alpha")
     for (let i = 0; i < data.length; i += 4) {
       if (data[i + 3] !== 0) {
         coveredPixels++;
