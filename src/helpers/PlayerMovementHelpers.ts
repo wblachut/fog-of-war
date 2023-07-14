@@ -145,8 +145,8 @@ export const getDirectionOnArrowMove = (e: KeyboardEvent) => {
 
 /* SCROLL VIEW BY X & Y */
 export const scrollPlayerView = (x: number, y: number) => {
-  const currentScrollX = window.scrollX || document.documentElement.scrollLeft;
-  const currentScrollY = window.screenY || document.documentElement.scrollTop;
+  const currentScrollX = document.documentElement.scrollLeft;
+  const currentScrollY = document.documentElement.scrollTop;
 
   window.scrollTo(currentScrollX + x, currentScrollY + y);
 };
@@ -167,6 +167,7 @@ export const scrollPlayerViewOnArrowDown = (
   mapSize: ElementSize,
 ): void => {
   const { clientWidth, clientHeight } = document.documentElement;
+
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(
     mapSize,
     clientWidth / 2, // we want to stop player movement for the half the size of viewport

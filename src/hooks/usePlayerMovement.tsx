@@ -109,6 +109,9 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
   // SET PLAYER IN THE STARTING POINT AND UNCOVER FIRST BIT OF MAP
   const MoveToBeginnerLocation = useCallback(() => {
     setPlayerPosition(STARTING_POSITION);
+
+    // make sure that on hard reload scroll is set to starter location
+    window.onbeforeunload = () => window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
