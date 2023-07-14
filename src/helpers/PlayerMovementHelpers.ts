@@ -6,11 +6,13 @@ import {
   Position,
 } from '~/model/customTypes.model';
 
+/* SET CUSTOM VARIABLES  */
 const RESTRICTED_DISTANCE = 50;
 const MINIMAL_DISTANCE = 60;
-const MOVE_MAGNITUDE = 20;
+const MOVE_MAGNITUDE = 10;
 const SCROLL_MAGNITUDE = 2;
 
+/* CALCULATE MAP'S RESTRICTED ZONES  */
 export function getMapRestrictions(
   canvasSize: ElementSize,
   distanceX = RESTRICTED_DISTANCE,
@@ -24,19 +26,25 @@ export function getMapRestrictions(
   return { leftRestrict, topRestrict, rightRestrict, bottomRestrict };
 }
 
-export const getNormalizedDistances = (prevPosition: Position, position: Position) => {
+/* CALCULATE NORMALIZED DISTANCES (by X axis, Y axis and total)  */
+export const getNormalizedDistances = (
+  prevPosition: Position,
+  position: Position,
+  moveMagnitude = MOVE_MAGNITUDE,
+) => {
   const { x: prevX, y: prevY } = prevPosition;
   const { x: newX, y: newY } = position;
   const dX = newX - prevX;
   const dY = newY - prevY;
   const dist = Math.sqrt(dX * dX + dY * dY);
 
-  const normalizedDX = (dX / dist) * MOVE_MAGNITUDE;
-  const normalizedDY = (dY / dist) * MOVE_MAGNITUDE;
+  const normalizedDX = (dX / dist) * moveMagnitude;
+  const normalizedDY = (dY / dist) * moveMagnitude;
 
   return { normalizedDX, normalizedDY, dist };
 };
 
+/* CALCULATE NORMALIZED PLAYER POSITION  */
 export const getNormalizedPosition = (
   prevPosition: Position,
   position: Position,
@@ -46,6 +54,7 @@ export const getNormalizedPosition = (
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(mapSize);
   const { normalizedDX, normalizedDY, dist } = getNormalizedDistances(prevPosition, position);
 
+  // return if move occurred to close to player
   if (dist < MINIMAL_DISTANCE) return prevPosition;
   const isOnBoarderX =
     leftRestrict >= prevX + normalizedDX || prevX + normalizedDX >= rightRestrict;
@@ -53,12 +62,14 @@ export const getNormalizedPosition = (
   const isOnBoarderY =
     topRestrict >= prevY + normalizedDY || prevY + normalizedDY >= bottomRestrict;
 
+  // return updated position only for move inside allowed areas
   return {
     x: isOnBoarderX ? prevX : prevX + normalizedDX,
     y: isOnBoarderY ? prevY : prevY + normalizedDY,
   };
 };
 
+/* CALCULATE POSITION ON ARROW MOVE  */
 export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position): Position => {
   switch (key) {
     case 'ArrowLeft':
@@ -86,7 +97,8 @@ export const getPlayerCoordsOnKeydown = (key: string, prevPosition: Position): P
   }
 };
 
-export const checkForRestrictedMove = (
+/* VALIDATE FOR RESTRICTED ARROW MOVE  */
+export const checkForRestrictedArrowMove = (
   key: string,
   prevPosition: Position,
   mapSize: ElementSize,
@@ -103,6 +115,7 @@ export const checkForRestrictedMove = (
   return isRestricted;
 };
 
+/* GET PLAYER DIRECTION */
 export const getPlayerDirection = (
   e: Partial<PlayerMoveEvent>,
   playerPosition: Position,
@@ -130,13 +143,15 @@ export const getDirectionOnArrowMove = (e: KeyboardEvent) => {
   }
 };
 
+/* SCROLL VIEW BY X & Y */
 export const scrollPlayerView = (x: number, y: number) => {
-  const currentScrollX = window.scrollX || document.documentElement.scrollLeft;
-  const currentScrollY = window.screenY || document.documentElement.scrollTop;
+  const currentScrollX = document.documentElement.scrollLeft;
+  const currentScrollY = document.documentElement.scrollTop;
 
   window.scrollTo(currentScrollX + x, currentScrollY + y);
 };
 
+/* SCROLL VIEW ON PLAYER MOUSE MOVE */
 export const scrollPlayerViewOnMouseMove = (
   prevPosition: Position,
   mousePosition: Position,
@@ -145,22 +160,25 @@ export const scrollPlayerViewOnMouseMove = (
   scrollPlayerView(normalizedDX / SCROLL_MAGNITUDE, normalizedDY / SCROLL_MAGNITUDE);
 };
 
+/* SCROLL VIEW ON PLAYER KEYBOARD ARROW MOVE */
 export const scrollPlayerViewOnArrowDown = (
   key: KeyboardEvent['key'],
   playerPosition: Position,
   mapSize: ElementSize,
 ): void => {
   const { clientWidth, clientHeight } = document.documentElement;
+
   const { leftRestrict, topRestrict, rightRestrict, bottomRestrict } = getMapRestrictions(
     mapSize,
-    clientWidth / 2,
-    clientHeight / 2,
+    clientWidth / 2, // we want to stop player movement for the half the size of viewport
+    clientHeight / 2, // same as above for height
   );
   const leftStop = leftRestrict >= playerPosition.x;
   const rightStop = rightRestrict <= playerPosition.x;
   const upStop = topRestrict >= playerPosition.y;
   const downStop = bottomRestrict <= playerPosition.y;
 
+  // returns - prevent scrolling if player is near the map border
   switch (key) {
     case 'ArrowLeft':
       if (rightStop) return;
