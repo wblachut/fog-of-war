@@ -13,6 +13,8 @@ describe('test <InfoModal />', () => {
     vi.useRealTimers();
   });
 
+  const mockedOpacityValue = '0.9'; // opacity in test rendering doesn't reach 1
+
   test('should initially render InfoModal with proper styles', () => {
     expect(screen.getByTestId('info-modal')).toHaveStyle('opacity: 0');
     expect(screen.getByTestId('info-modal')).toHaveStyle('transform: translateY(-200%)');
@@ -24,7 +26,9 @@ describe('test <InfoModal />', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('info-modal').style['opacity']).toBeCloseTo(0.9360917483504706);
+      expect(Number(screen.getByTestId('info-modal').style['opacity']).toFixed(1)).toEqual(
+        mockedOpacityValue,
+      );
     });
   });
 

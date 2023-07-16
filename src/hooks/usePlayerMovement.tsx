@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  checkForRestrictedArrowMove,
-  getNormalizedPosition,
-  getPlayerCoordsOnKeydown,
-  getPlayerDirection,
-  scrollPlayerViewOnArrowDown,
-  scrollPlayerViewOnMouseMove,
-} from '~/helpers/PlayerMovementHelpers';
+import { playerMovementHelpers } from '~/helpers/PlayerMovementHelpers';
 import { PlayerDirection } from '~/model/PlayerDirectionEnum';
 import {
   CustomMouseEvent,
@@ -30,6 +23,15 @@ export interface MoveHandler {
   handleMouseUp: () => void;
 }
 
+const {
+  getNormalizedPosition,
+  getPlayerCoordsOnKeydown,
+  getPlayerDirection,
+  scrollPlayerViewOnMouseMove,
+  scrollPlayerViewOnArrowDown,
+  checkForRestrictedArrowMove,
+} = playerMovementHelpers;
+
 export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
   const [playerPosition, setPlayerPosition] = useState<Position>(HIDDEN_POSITION);
   const [mousePosition, setMousePosition] = useState<Position>(STARTING_POSITION);
@@ -38,10 +40,10 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
   const intervalId = useRef<TimeoutType>(null);
 
   /* HANDLE THE DIRECTION PLAYER IS FACING  */
-  const handlePlayerDirection = (e: PlayerMoveEvent, playerPosition: Position) => {
+  const handlePlayerDirection = useCallback((e: PlayerMoveEvent, playerPosition: Position) => {
     const newDirection = getPlayerDirection(e, playerPosition);
     setPlayerDirection((prevDirection) => newDirection ?? prevDirection);
-  };
+  }, []);
 
   /* HANDLE MAP SCROLLING ON MOUSE MOVE  */
   const handleScrollPlayerView = useCallback((prevPosition: Position, position: Position) => {
@@ -69,7 +71,14 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
         return getNormalizedPosition(prevPosition, newMousePosition, mapSize);
       });
     },
-    [isMousePressed, mapSize, playerPosition, isMounted, handleScrollPlayerView],
+    [
+      isMousePressed,
+      mapSize,
+      playerPosition,
+      isMounted,
+      handlePlayerDirection,
+      handleScrollPlayerView,
+    ],
   );
 
   /* HANDLE isMousePressed FLAG  */
@@ -117,7 +126,7 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
       scrollPlayerViewOnArrowDown(e.key, playerPosition, mapSize);
       handlePlayerDirection(e, playerPosition);
     },
-    [playerPosition, mapSize],
+    [playerPosition, mapSize, handlePlayerDirection],
   );
 
   /* SET handleArrowMove LISTENER ON WINDOW */

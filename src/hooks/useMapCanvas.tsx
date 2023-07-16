@@ -5,8 +5,9 @@ import { MoveHandler } from './usePlayerMovement';
 
 const PROGRESS_DEBOUNCE_TIMEOUT = 50;
 
+const { calculateFogCoverage, clearFogOfWar } = mapExplorerHelpers;
+
 export const useMapCanvas = (moveHandler: MoveHandler) => {
-  const { calculateFogCoverage, clearFogOfWar } = mapExplorerHelpers;
   const stageRef = useRef<StageRef>(null);
   const fogLayerRef = useRef<CanvasRef>(null);
   const [percentageUncovered, setPercentageUncovered] = useState(0);
@@ -38,7 +39,7 @@ export const useMapCanvas = (moveHandler: MoveHandler) => {
     }, PROGRESS_DEBOUNCE_TIMEOUT);
 
     return () => clearInterval(debounceFogCoverage);
-  }, [getFogCoverage, moveHandler.playerPosition, clearFogOfWar]);
+  }, [getFogCoverage, moveHandler.playerPosition]);
 
   return {
     stageRef,
