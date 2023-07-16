@@ -118,20 +118,8 @@ export const playerMovementHelpers = {
   },
 
   /* GET PLAYER DIRECTION */
-  getPlayerDirection: (
-    e: Partial<PlayerMoveEvent>,
-    playerPosition: Position,
-  ): PlayerDirection | undefined => {
-    const isMouseEvent = e.type === 'mousemove';
-    const isArrowEvent = e.type === 'keydown';
-    if (isMouseEvent)
-      return playerMovementHelpers.getDirectionOnMouseMove(e as CustomMouseEvent, playerPosition);
-    if (isArrowEvent) return playerMovementHelpers.getDirectionOnArrowMove(e as KeyboardEvent);
-    return;
-  },
-
-  getDirectionOnMouseMove: (e: CustomMouseEvent, playerPosition: Position) =>
-    e.evt.offsetX < playerPosition.x ? PlayerDirection.LEFT : PlayerDirection.RIGHT,
+  getDirectionOnMouseMove: (mousePosition: Position, playerPosition: Position) =>
+    mousePosition.x < playerPosition.x ? PlayerDirection.LEFT : PlayerDirection.RIGHT,
 
   getDirectionOnArrowMove: (e: KeyboardEvent) => {
     switch (e.key) {

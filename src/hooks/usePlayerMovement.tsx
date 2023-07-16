@@ -26,7 +26,8 @@ export interface MoveHandler {
 const {
   getNormalizedPosition,
   getPlayerCoordsOnKeydown,
-  getPlayerDirection,
+  getDirectionOnMouseMove,
+  getDirectionOnArrowMove,
   scrollPlayerViewOnMouseMove,
   scrollPlayerViewOnArrowDown,
   checkForRestrictedArrowMove,
@@ -40,10 +41,21 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
   const intervalId = useRef<TimeoutType>(null);
 
   /* HANDLE THE DIRECTION PLAYER IS FACING  */
-  const handlePlayerDirection = useCallback((e: PlayerMoveEvent, playerPosition: Position) => {
-    const newDirection = getPlayerDirection(e, playerPosition);
-    setPlayerDirection((prevDirection) => newDirection ?? prevDirection);
-  }, []);
+  const handlePlayerDirection = useCallback(
+    (e: PlayerMoveEvent, playerPosition: Position) => {
+      const isMouseEvent = e.type === 'mousemove';
+      const isArrowEvent = e.type === 'keydown';
+      if (isMouseEvent) {
+        const newDirection = getDirectionOnMouseMove(mousePosition, playerPosition);
+        setPlayerDirection(newDirection);
+      }
+      if (isArrowEvent) {
+        const newDirection = getDirectionOnArrowMove(e as KeyboardEvent);
+        setPlayerDirection((prevDirection) => newDirection ?? prevDirection);
+      }
+    },
+    [mousePosition],
+  );
 
   /* HANDLE MAP SCROLLING ON MOUSE MOVE  */
   const handleScrollPlayerView = useCallback((prevPosition: Position, position: Position) => {
@@ -104,6 +116,7 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
     clearTimeout(intervalId?.current as NonNullable<TimeoutType>);
     intervalId.current = setInterval(() => {
       setPlayerPosition((prevPosition) => {
+        setPlayerDirection(getDirectionOnMouseMove(mousePosition, playerPosition));
         return getNormalizedPosition(prevPosition, mousePosition, mapSize);
       });
     }, MOVE_ON_HOLD_INTERVAL);
@@ -111,7 +124,7 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
     return () => {
       clearTimeout(intervalId.current as NonNullable<TimeoutType>);
     };
-  }, [isMousePressed, mousePosition, handleScrollPlayerView, mapSize]);
+  }, [isMousePressed, mousePosition, handleScrollPlayerView, mapSize, playerPosition]);
 
   /* HANDLE PLAYER KEYBOARD ARROW MOVES  */
   const handleArrowMove = useCallback(
