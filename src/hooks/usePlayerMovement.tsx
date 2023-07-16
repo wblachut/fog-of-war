@@ -1,24 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
-import {
-  checkForRestrictedArrowMove,
-  getNormalizedPosition,
-  getPlayerCoordsOnKeydown,
-  getPlayerDirection,
-  scrollPlayerViewOnArrowDown,
-  scrollPlayerViewOnMouseMove,
-} from '~/helpers/PlayerMovementHelpers';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { playerMovementHelpers } from '~/helpers/PlayerMovementHelpers';
 import { PlayerDirection } from '~/model/PlayerDirectionEnum';
 import {
   CustomMouseEvent,
   ElementSize,
   PlayerMoveEvent,
   Position,
+  TimeoutType,
 } from '~/model/customTypes.model';
 
 /* SET CUSTOM VARIABLES  */
 const STARTING_POSITION = { x: 560, y: 380 };
 const HIDDEN_POSITION = { x: -100, y: -100 };
 const LEFT_CLICK_MOUSE_BUTTON = 0;
+const MOVE_ON_HOLD_INTERVAL = 20;
 
 export interface MoveHandler {
   playerPosition: Position;
@@ -28,43 +23,62 @@ export interface MoveHandler {
   handleMouseUp: () => void;
 }
 
+const {
+  getNormalizedPosition,
+  getPlayerCoordsOnKeydown,
+  getPlayerDirection,
+  scrollPlayerViewOnMouseMove,
+  scrollPlayerViewOnArrowDown,
+  checkForRestrictedArrowMove,
+} = playerMovementHelpers;
+
 export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
   const [playerPosition, setPlayerPosition] = useState<Position>(HIDDEN_POSITION);
+  const [mousePosition, setMousePosition] = useState<Position>(STARTING_POSITION);
   const [isMousePressed, setIsMousePressed] = useState(false);
   const [playerDirection, setPlayerDirection] = useState(PlayerDirection.RIGHT);
+  const intervalId = useRef<TimeoutType>(null);
 
   /* HANDLE THE DIRECTION PLAYER IS FACING  */
-  const handlePlayerDirection = (e: PlayerMoveEvent, playerPosition: Position) => {
+  const handlePlayerDirection = useCallback((e: PlayerMoveEvent, playerPosition: Position) => {
     const newDirection = getPlayerDirection(e, playerPosition);
     setPlayerDirection((prevDirection) => newDirection ?? prevDirection);
-  };
+  }, []);
 
   /* HANDLE MAP SCROLLING ON MOUSE MOVE  */
   const handleScrollPlayerView = useCallback((prevPosition: Position, position: Position) => {
     scrollPlayerViewOnMouseMove(prevPosition, position);
   }, []);
 
-  /* PLAYER MOVEMENT  */
-  // Player movement is done on Mouse Move when the isMousePressed flag is truthy
+  /* PLAYER MOVEMENT */
+  // Player movement is done on mouse down (isMousePressed flag)
+  // by mouse move (handleMouseMove) or mouse hold (useEffect with setTimeout)
 
   /* HANDLE PLAYER MOUSE MOVEMENT  */
   const handleMouseMove = useCallback(
     (e: CustomMouseEvent) => {
       const stage = e.currentTarget.getStage(); // mouse event are stage events
-      const position = stage?.getPointerPosition();
+      const newMousePosition = stage?.getPointerPosition() as Position;
 
       if (!isMousePressed || !isMounted) return;
+      setMousePosition(newMousePosition);
 
-      const mousePosition = position as Position;
-      handlePlayerDirection(e, playerPosition);
       setPlayerPosition((prevPosition) => {
+        handlePlayerDirection(e, playerPosition);
         // We need prevPosition for scrolling func that is why we call this function in useState
-        handleScrollPlayerView(prevPosition, mousePosition);
+        handleScrollPlayerView(prevPosition, newMousePosition);
 
-        return getNormalizedPosition(prevPosition, mousePosition, mapSize);
+        return getNormalizedPosition(prevPosition, newMousePosition, mapSize);
       });
     },
-    [isMousePressed, mapSize, playerPosition, isMounted, handleScrollPlayerView],
+    [
+      isMousePressed,
+      mapSize,
+      playerPosition,
+      isMounted,
+      handlePlayerDirection,
+      handleScrollPlayerView,
+    ],
   );
 
   /* HANDLE isMousePressed FLAG  */
@@ -73,13 +87,31 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
       const leftMouseButtonClick = e.evt.button === LEFT_CLICK_MOUSE_BUTTON;
       if (!leftMouseButtonClick || !isMounted) return;
       setIsMousePressed(true);
+      const stage = e.currentTarget.getStage();
+      const newMousePosition = stage?.getPointerPosition() as Position;
+      setMousePosition(newMousePosition);
     },
     [isMounted],
   );
-
   const handleMouseUp = useCallback(() => {
     setIsMousePressed(false);
+    clearInterval(intervalId.current as NonNullable<TimeoutType>);
   }, []);
+
+  /* HANDLE PLAYER MOVE ON MOUSE DOWN HOLD (no mouse movement) */
+  useEffect(() => {
+    if (!isMousePressed) return;
+    clearTimeout(intervalId?.current as NonNullable<TimeoutType>);
+    intervalId.current = setInterval(() => {
+      setPlayerPosition((prevPosition) => {
+        return getNormalizedPosition(prevPosition, mousePosition, mapSize);
+      });
+    }, MOVE_ON_HOLD_INTERVAL);
+
+    return () => {
+      clearTimeout(intervalId.current as NonNullable<TimeoutType>);
+    };
+  }, [isMousePressed, mousePosition, handleScrollPlayerView, mapSize]);
 
   /* HANDLE PLAYER KEYBOARD ARROW MOVES  */
   const handleArrowMove = useCallback(
@@ -94,7 +126,7 @@ export const usePlayerMovement = (mapSize: ElementSize, isMounted: boolean) => {
       scrollPlayerViewOnArrowDown(e.key, playerPosition, mapSize);
       handlePlayerDirection(e, playerPosition);
     },
-    [playerPosition, mapSize],
+    [playerPosition, mapSize, handlePlayerDirection],
   );
 
   /* SET handleArrowMove LISTENER ON WINDOW */

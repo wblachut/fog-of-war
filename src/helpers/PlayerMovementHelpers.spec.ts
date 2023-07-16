@@ -1,18 +1,20 @@
-import {
-  getMapRestrictions,
-  getNormalizedDistances,
-  getNormalizedPosition,
-  getPlayerCoordsOnKeydown,
-  getPlayerDirection,
-} from '~/helpers/PlayerMovementHelpers';
 import { mockMoveEvent } from '~/mocks/mockMoveEvent';
 import { KeyboardArrow } from '~/model/KeyboardArrowEnum';
 import { PlayerDirection } from '~/model/PlayerDirectionEnum';
+import { playerMovementHelpers } from './PlayerMovementHelpers';
 
 describe('test PlayerMovementHelpers', () => {
   const mockCanvasSize = { width: 800, height: 600 };
   const mockDist = 10;
   const prevPosition = { x: 100, y: 100 };
+
+  const {
+    getMapRestrictions,
+    getNormalizedDistances,
+    getNormalizedPosition,
+    getPlayerCoordsOnKeydown,
+    getPlayerDirection,
+  } = playerMovementHelpers;
 
   describe('getMapRestrictions', () => {
     it('should return the map restrictions based on the canvas size and radius', () => {

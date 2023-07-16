@@ -20,3 +20,5 @@ export type CanvasRef = MutableRefObject<HTMLCanvasElement> | null;
 export type LayerRef = LegacyRef<Layer>;
 
 export type PlayerMoveEvent = CustomMouseEvent | KeyboardEvent;
+
+export type TimeoutType = ReturnType<typeof setTimeout> | null;
