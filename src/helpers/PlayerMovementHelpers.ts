@@ -1,10 +1,5 @@
 import { PlayerDirection } from '~/model/PlayerDirectionEnum';
-import {
-  CustomMouseEvent,
-  ElementSize,
-  PlayerMoveEvent,
-  Position,
-} from '~/model/customTypes.model';
+import { ElementSize, Position } from '~/model/customTypes.model';
 
 /* SET CUSTOM VARIABLES  */
 const RESTRICTED_DISTANCE = 50;
