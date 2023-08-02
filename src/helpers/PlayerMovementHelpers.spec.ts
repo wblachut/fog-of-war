@@ -13,7 +13,8 @@ describe('test PlayerMovementHelpers', () => {
     getNormalizedDistances,
     getNormalizedPosition,
     getPlayerCoordsOnKeydown,
-    getPlayerDirection,
+    getDirectionOnMouseMove,
+    getDirectionOnArrowMove,
   } = playerMovementHelpers;
 
   describe('getMapRestrictions', () => {
@@ -129,46 +130,27 @@ describe('test PlayerMovementHelpers', () => {
 
     it('should return the player direction based on the mouse move event and player position', () => {
       // `any` used only to get rid of type conversion between mock and Konva Stage event
-      const directionLeft = getPlayerDirection(
-        mockMoveEvent.mouseEvent(positionLeft) as any,
-        playerPosition,
-      );
-      const directionRight = getPlayerDirection(
-        mockMoveEvent.mouseEvent(positionRight) as any,
-        playerPosition,
-      );
+      const directionLeft = getDirectionOnMouseMove(positionLeft, playerPosition);
+      const directionRight = getDirectionOnMouseMove(positionRight, playerPosition);
 
       expect(directionLeft).toEqual(PlayerDirection.LEFT);
       expect(directionRight).toEqual(PlayerDirection.RIGHT);
     });
 
     it('should return properly the player direction based on the arrow key event', () => {
-      const playerPosition = { x: 100, y: 100 };
-
-      const directionLeft = getPlayerDirection(
-        mockMoveEvent.keyboardEvent(KeyboardArrow.LEFT),
-        playerPosition,
+      const directionLeft = getDirectionOnArrowMove(
+        mockMoveEvent.keyboardEvent(KeyboardArrow.LEFT) as KeyboardEvent,
       );
-      const directionRight = getPlayerDirection(
-        mockMoveEvent.keyboardEvent(KeyboardArrow.RIGHT),
-        playerPosition,
+      const directionRight = getDirectionOnArrowMove(
+        mockMoveEvent.keyboardEvent(KeyboardArrow.RIGHT) as KeyboardEvent,
       );
-      const directionUp = getPlayerDirection(
-        mockMoveEvent.keyboardEvent(KeyboardArrow.UP),
-        playerPosition,
+      const directionUp = getDirectionOnArrowMove(
+        mockMoveEvent.keyboardEvent(KeyboardArrow.UP) as KeyboardEvent,
       );
 
       expect(directionLeft).toEqual(PlayerDirection.LEFT);
       expect(directionRight).toEqual(PlayerDirection.RIGHT);
       expect(directionUp).toBeUndefined();
-    });
-
-    it('should return undefined for unsupported event types', () => {
-      const changeEvent = { type: 'change' };
-      const playerPosition = { x: 100, y: 100 };
-
-      const direction = getPlayerDirection(changeEvent, playerPosition);
-      expect(direction).toBeUndefined();
     });
   });
 });
